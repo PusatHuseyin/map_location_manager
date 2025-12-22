@@ -5,8 +5,8 @@ class RouteModel {
   final String name;
   final DateTime startTime;
   final DateTime? endTime;
-  final double? totalDistance; // meters cinsinden
-  final int? duration; // seconds cinsinden
+  final double? totalDistance;
+  final int? duration;
   final List<RoutePointModel> points;
 
   RouteModel({
@@ -21,8 +21,11 @@ class RouteModel {
 
   bool get isActive => endTime == null;
 
-  // Database'den model olustur
-  factory RouteModel.fromMap(Map<String, dynamic> map, {List<RoutePointModel>? points}) {
+  // Database model
+  factory RouteModel.fromMap(
+    Map<String, dynamic> map, {
+    List<RoutePointModel>? points,
+  }) {
     return RouteModel(
       id: map['id'] as String,
       name: map['name'] as String,
@@ -68,7 +71,6 @@ class RouteModel {
     );
   }
 
-  // Formatted duration string
   String get formattedDuration {
     if (duration == null) return '--:--';
     final hours = duration! ~/ 3600;
@@ -81,7 +83,6 @@ class RouteModel {
     return '${minutes}dk ${seconds}sn';
   }
 
-  // Formatted distance string
   String get formattedDistance {
     if (totalDistance == null) return '0 m';
     if (totalDistance! >= 1000) {

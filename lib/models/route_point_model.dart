@@ -17,7 +17,6 @@ class RoutePointModel {
     this.accuracy,
   });
 
-  // Database'den model olustur
   factory RoutePointModel.fromMap(Map<String, dynamic> map) {
     return RoutePointModel(
       id: map['id'] as String,
@@ -30,7 +29,6 @@ class RoutePointModel {
     );
   }
 
-  // Model'i database'e kaydet
   Map<String, dynamic> toMap() {
     return {
       'id': id,

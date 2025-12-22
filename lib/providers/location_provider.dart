@@ -44,7 +44,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Yeni konum ekle
+  // Yeni konum ekleme
   Future<bool> addLocation({
     required String name,
     required double latitude,
@@ -71,7 +71,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Konum sil
+  // Konum silme
   Future<bool> deleteLocation(String id) async {
     try {
       await _databaseService.deleteLocation(id);
@@ -84,7 +84,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Mevcut konumu guncelle
+  // Mevcut konumu guncelleme
   Future<void> updateCurrentPosition() async {
     try {
       final position = await _locationService.getCurrentPosition();
@@ -99,7 +99,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Canli konum takibini baslat
+  // Canli konum takibini baslatma
   void _startLocationTracking() {
     _locationService.positionStream.listen((position) {
       _currentPosition = position;
@@ -107,7 +107,7 @@ class LocationProvider with ChangeNotifier {
     });
   }
 
-  // Izin kontrolu yap
+  // Izin kontrolu yapma
   Future<bool> checkPermissions() async {
     final hasPermission = await _locationService.checkAndRequestPermissions();
     if (hasPermission) {

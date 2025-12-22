@@ -34,14 +34,19 @@ class LocationsScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height -
-                         MediaQuery.of(context).padding.top -
-                         kToolbarHeight,
+                  height:
+                      MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).padding.top -
+                      kToolbarHeight,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.error_outline, size: 64, color: AppTheme.error),
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: AppTheme.error,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           provider.error!,
@@ -55,9 +60,8 @@ class LocationsScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           'veya asagi cekin',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppTheme.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppTheme.textSecondary),
                         ),
                       ],
                     ),
@@ -73,9 +77,10 @@ class LocationsScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height -
-                         MediaQuery.of(context).padding.top -
-                         kToolbarHeight,
+                  height:
+                      MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).padding.top -
+                      kToolbarHeight,
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -88,43 +93,13 @@ class LocationsScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         Text(
                           'Henuz konum eklenmemis',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: AppTheme.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(color: AppTheme.textSecondary),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Yeni konum eklemek icin + butonuna basin',
                           style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.swipe_down,
-                                size: 16,
-                                color: AppTheme.primaryColor,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Yenilemek icin asagi cekin',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: AppTheme.primaryColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                              ),
-                            ],
-                          ),
                         ),
                       ],
                     ),
@@ -199,9 +174,9 @@ class _LocationCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 location.description!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -221,7 +196,9 @@ class _LocationCard extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Konumu Sil'),
-        content: Text('${location.name} konumunu silmek istediginize emin misiniz?'),
+        content: Text(
+          '${location.name} konumunu silmek istediginize emin misiniz?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

@@ -48,21 +48,20 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     // Rotate animation (continuous)
     _rotateController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat();
-    _rotateAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      _rotateController,
-    );
+    _rotateAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_rotateController);
 
     _fadeController.forward();
     _slideController.forward();
@@ -70,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeApp() async {
     try {
-      // Step 1: Database baslat
+      // Database baslat
       await _updateStatus('Veritabani hazirlaniyor...', 0.2);
       await Future.delayed(const Duration(milliseconds: 600));
       await DatabaseService().database;
@@ -111,8 +110,7 @@ class _SplashScreenState extends State<SplashScreen>
         await routesProvider.loadRoutes();
       }
 
-      // Step 4: Tamamlandi
-      await _updateStatus('Tamamlandi!', 1.0);
+      await _updateStatus('Tamamlandı!', 1.0);
       await Future.delayed(const Duration(milliseconds: 500));
 
       if (mounted) {
@@ -122,19 +120,21 @@ class _SplashScreenState extends State<SplashScreen>
                 const HomeScreen(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              const begin = Offset(1.0, 0.0);
-              const end = Offset.zero;
-              const curve = Curves.easeInOutCubic;
+                  const begin = Offset(1.0, 0.0);
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOutCubic;
 
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: curve));
-              var offsetAnimation = animation.drive(tween);
+                  var tween = Tween(
+                    begin: begin,
+                    end: end,
+                  ).chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
 
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
             transitionDuration: const Duration(milliseconds: 600),
           ),
         );
@@ -223,7 +223,9 @@ class _SplashScreenState extends State<SplashScreen>
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.3),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.3,
+                                      ),
                                       blurRadius: 30,
                                       offset: const Offset(0, 15),
                                       spreadRadius: -5,
@@ -267,27 +269,6 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
 
                         const SizedBox(height: 12),
-
-                        // Tagline
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            'Track. Save. Explore.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -312,15 +293,13 @@ class _SplashScreenState extends State<SplashScreen>
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 400),
                             curve: Curves.easeInOut,
-                            width: MediaQuery.of(context).size.width *
+                            width:
+                                MediaQuery.of(context).size.width *
                                 0.8 *
                                 _progress,
                             decoration: const BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.white,
-                                  Color(0xFFE3F2FD),
-                                ],
+                                colors: [Colors.white, Color(0xFFE3F2FD)],
                               ),
                             ),
                           ),
@@ -387,34 +366,6 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
 
                 const SizedBox(height: 80),
-
-                // Footer
-                FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Powered by Flutter',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white.withValues(alpha: 0.6),
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'v1.0.0',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.white.withValues(alpha: 0.5),
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
               ],
             ),
           ),

@@ -15,7 +15,7 @@ class LocationModel {
     required this.createdAt,
   });
 
-  // Database'den model olustur
+  // Database model
   factory LocationModel.fromMap(Map<String, dynamic> map) {
     return LocationModel(
       id: map['id'] as String,
@@ -27,7 +27,6 @@ class LocationModel {
     );
   }
 
-  // Model'i database'e kaydet
   Map<String, dynamic> toMap() {
     return {
       'id': id,

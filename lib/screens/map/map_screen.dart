@@ -58,7 +58,8 @@ class _MapScreenState extends State<MapScreen> {
       }
 
       // Aktif rota varsa ciz
-      if (routeProvider.isTracking && routeProvider.currentRoutePoints.isNotEmpty) {
+      if (routeProvider.isTracking &&
+          routeProvider.currentRoutePoints.isNotEmpty) {
         _polylines.add(_createActiveRoutePolyline(routeProvider));
       }
     });
@@ -82,9 +83,7 @@ class _MapScreenState extends State<MapScreen> {
       markerId: const MarkerId('current_location'),
       position: LatLng(position.latitude, position.longitude),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-      infoWindow: const InfoWindow(
-        title: 'Mevcut Konumum',
-      ),
+      infoWindow: const InfoWindow(title: 'Mevcut Konumum'),
     );
   }
 
@@ -116,11 +115,7 @@ class _MapScreenState extends State<MapScreen> {
         ],
       ),
       body: Stack(
-        children: [
-          _buildMap(),
-          _buildRouteControls(),
-          _buildRouteInfo(),
-        ],
+        children: [_buildMap(), _buildRouteControls(), _buildRouteInfo()],
       ),
     );
   }
@@ -176,15 +171,16 @@ class _MapScreenState extends State<MapScreen> {
                   size: 28,
                 ),
                 label: Text(
-                  provider.isTracking ? 'Bitir' : 'Baslat',
+                  provider.isTracking ? 'Bitir' : 'Başlat',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      provider.isTracking ? AppTheme.error : AppTheme.success,
+                  backgroundColor: provider.isTracking
+                      ? AppTheme.error
+                      : AppTheme.success,
                   foregroundColor: Colors.white,
                   elevation: 8,
                   shape: RoundedRectangleBorder(
@@ -269,7 +265,9 @@ class _MapScreenState extends State<MapScreen> {
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Rota kaydi baslatilamadi. Konum izinlerini kontrol edin.'),
+            content: Text(
+              'Rota kaydi baslatilamadi. Konum izinlerini kontrol edin.',
+            ),
             backgroundColor: AppTheme.error,
           ),
         );
@@ -319,16 +317,16 @@ class _InfoItem extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

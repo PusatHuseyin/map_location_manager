@@ -46,8 +46,9 @@ class RouteProvider with ChangeNotifier {
         _currentRoutePoints = _activeRoute!.points;
         // Calculate elapsed time if route is still active
         if (_activeRoute!.isActive) {
-          _elapsedSeconds =
-              DateTime.now().difference(_activeRoute!.startTime).inSeconds;
+          _elapsedSeconds = DateTime.now()
+              .difference(_activeRoute!.startTime)
+              .inSeconds;
         }
         notifyListeners();
       }
@@ -60,15 +61,15 @@ class RouteProvider with ChangeNotifier {
   Future<bool> startRouteTracking() async {
     try {
       // Konum izinlerini kontrol et
-      final hasPermission =
-          await _locationService.checkAndRequestPermissions();
+      final hasPermission = await _locationService.checkAndRequestPermissions();
       if (!hasPermission) return false;
 
       // Yeni rota olustur
       final routeId = _uuid.v4();
       _activeRoute = RouteModel(
         id: routeId,
-        name: 'Rota ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}',
+        name:
+            'Rota ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}',
         startTime: DateTime.now(),
       );
 
@@ -80,8 +81,9 @@ class RouteProvider with ChangeNotifier {
       await _locationService.startLocationTracking();
 
       // Konum guncellemelerini dinle
-      _positionSubscription =
-          _locationService.positionStream.listen((position) {
+      _positionSubscription = _locationService.positionStream.listen((
+        position,
+      ) {
         _addRoutePoint(position);
       });
 
