@@ -1,0 +1,39 @@
+Görev Başlığı
+Flutter Harita ve Konum Yönetimi Görevi
+
+Amaç
+Bu görev, Flutter kullanarak harita üzerinde konum ekleme, canlı konum takibi ve basit rota kaydı gibi temel işlevlerin geliştirilmesini amaçlamaktadır. Adayın Flutter ile mobil uygulama geliştirme, harita entegrasyonu ve temel veri yönetimi becerileri değerlendirilecektir.
+
+
+Görev Detayları
+
+1. Konumlar Sayfası
+	• Kullanıcı yeni konum ekleyebilmelidir.
+	• Konum bilgileri yerel olarak saklanmalıdır (SQLite veya bellek içi önbellek kullanılabilir).
+	• Konum listesi ekranda görüntülenmelidir.
+2. Harita Ekranı
+	• Harita başlangıçta Konya koordinatlarına odaklanmalıdır.
+	• Eklenen konumlar harita üzerinde marker olarak gösterilmelidir.
+	• Kullanıcının mevcut konumu gerçek zamanlı takip edilmelidir.
+	• “Başlat” butonuna basıldığında konum değişimleri kaydedilmeli, “Bitir” ile kayıt durmalıdır.
+3. Geçmiş Rotalar
+	• Kaydedilen rotalar listelenebilmelidir.
+	• Her rota seçildiğinde harita üzerinde çizilmelidir (animasyon zorunlu değil, basit çizgi yöneterli).
+
+Teknik Gereksinimler
+	• Flutter (güncel kararlı sürüm)
+	• google_maps_flutter → Harita
+	• geolocator → Canlı konum
+	• sqflite veya bellek içi çözüm → Yerel veri saklama
+	• provider veya bloc → Durum yönetimi
+
+Teslimat
+	• Proje ZIP dosyası.
+	• README dosyası (SQLite tablo yapısı veya kullanılan bellek içi yaklaşım, API key tanımı ve çalıştırma adımları).
+	• APK Dosyası.
+
+Değerlendirme Kriterleri
+	1. Doğruluk: Temel gereksinimlerin karşılanması
+	2. Tasarım: Basit ve kullanıcı dostu arayüz
+	3. Fonksiyonellik: Harita, konum ekleme, canlı takip ve rota kaydı işlevlerinin sorunsuz çalışması
+	4. Kod Kalitesi: Modüler, okunabilir ve temiz kod
