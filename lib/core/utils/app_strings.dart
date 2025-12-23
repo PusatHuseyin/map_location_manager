@@ -1,6 +1,6 @@
 // Centralized string constants
 class AppStrings {
-  // App Info
+  // App info
   static const String appName = 'Harita & Konum Yönetimi';
   static const String appVersion = '1.0.0';
 

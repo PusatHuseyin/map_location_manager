@@ -16,7 +16,7 @@ class AppTheme {
   static const Color textSecondary = Color(0xFF757575);
   static const Color textHint = Color(0xFFBDBDBD);
 
-  // Location & Route colors
+  // Location & route colors
   static const Color locationMarker = Color(0xFFE91E63);
   static const Color routeActive = Color(0xFF4CAF50);
   static const Color routeCompleted = primaryColor;
