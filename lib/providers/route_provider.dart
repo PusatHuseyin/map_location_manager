@@ -119,21 +119,19 @@ class RouteProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Rota kaydini durdur
-  Future<bool> stopRouteTracking() async {
+  // Stop route tracking
+  Future<bool> stopRouteTracking({String? customName}) async {
     if (_activeRoute == null) return false;
 
     try {
-      // Konum takibini durdur
       await _locationService.stopLocationTracking();
       await _positionSubscription?.cancel();
       _positionSubscription = null;
 
-      // Duration timer durdur
       _durationTimer?.cancel();
       _durationTimer = null;
 
-      // Toplam mesafeyi hesapla
+      // Calculate total distance
       double totalDistance = 0.0;
       if (_currentRoutePoints.length >= 2) {
         for (int i = 0; i < _currentRoutePoints.length - 1; i++) {
@@ -146,8 +144,9 @@ class RouteProvider with ChangeNotifier {
         }
       }
 
-      // Rotayi guncelle
+      // Update route with custom name if provided
       final updatedRoute = _activeRoute!.copyWith(
+        name: customName ?? _activeRoute!.name,
         endTime: DateTime.now(),
         totalDistance: totalDistance,
         duration: _elapsedSeconds,
@@ -156,7 +155,6 @@ class RouteProvider with ChangeNotifier {
 
       await _databaseService.updateRoute(updatedRoute);
 
-      // State temizle
       _activeRoute = null;
       _currentRoutePoints = [];
       _elapsedSeconds = 0;

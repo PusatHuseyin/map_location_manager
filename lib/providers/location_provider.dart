@@ -71,6 +71,34 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
+  // Konum güncelleme
+  Future<bool> updateLocation({
+    required String id,
+    required String name,
+    required double latitude,
+    required double longitude,
+    String? description,
+  }) async {
+    try {
+      final location = LocationModel(
+        id: id,
+        name: name,
+        latitude: latitude,
+        longitude: longitude,
+        description: description,
+        createdAt: DateTime.now(), // Will be ignored by update
+      );
+
+      await _databaseService.updateLocation(location);
+      await loadLocations();
+      return true;
+    } catch (e) {
+      _error = 'Konum güncellenirken hata oluştu';
+      notifyListeners();
+      return false;
+    }
+  }
+
   // Konum silme
   Future<bool> deleteLocation(String id) async {
     try {

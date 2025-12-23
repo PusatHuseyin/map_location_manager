@@ -4,9 +4,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/app_strings.dart';
 import '../../providers/location_provider.dart';
 import '../../providers/route_provider.dart';
 import '../../models/location_model.dart';
+import '../../widgets/add_location_from_map_dialog.dart'; // Actually BottomSheet
+import '../routes/route_name_dialog.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -105,15 +108,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Harita'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.my_location),
-            onPressed: _moveToCurrentLocation,
-          ),
-        ],
-      ),
       body: Stack(
         children: [_buildMap(), _buildRouteControls(), _buildRouteInfo()],
       ),
@@ -139,17 +133,17 @@ class _MapScreenState extends State<MapScreen> {
         target: AppConstants.konyaLocation,
         zoom: AppConstants.defaultZoom,
       ),
+      onMapCreated: (controller) {
+        _mapController = controller;
+        _updateMarkersAndRoute();
+      },
       markers: _markers,
       polylines: _polylines,
       myLocationEnabled: true,
       myLocationButtonEnabled: false,
-      mapType: MapType.normal,
-      onMapCreated: (controller) {
-        _mapController = controller;
-        _moveToCurrentLocation();
-      },
-      compassEnabled: true,
       zoomControlsEnabled: false,
+      mapToolbarEnabled: false,
+      onLongPress: _onMapLongPress,
     );
   }
 
@@ -241,54 +235,51 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _toggleRouteTracking(RouteProvider provider) async {
     if (provider.isTracking) {
-      // Rota kaydini durdur
-      final success = await provider.stopRouteTracking();
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Rota basariyla kaydedildi'),
-            backgroundColor: AppTheme.success,
-          ),
-        );
-        _updateMarkersAndRoute();
-      }
+      // Show route name dialog
+      await showDialog<String>(
+        context: context,
+        builder: (context) => const RouteNameDialog(),
+      );
+      // Dialog handles the stop tracking
     } else {
-      // Rota kaydini baslat
       final success = await provider.startRouteTracking();
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Rota kaydi baslatildi'),
-            backgroundColor: AppTheme.success,
-          ),
-        );
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Rota kaydi baslatilamadi. Konum izinlerini kontrol edin.',
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppStrings.startTracking),
+              backgroundColor: AppTheme.success,
             ),
-            backgroundColor: AppTheme.error,
-          ),
-        );
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppStrings.locationPermissionRequired),
+              backgroundColor: AppTheme.error,
+            ),
+          );
+        }
       }
     }
   }
 
-  Future<void> _moveToCurrentLocation() async {
-    final locationProvider = context.read<LocationProvider>();
-    final position = locationProvider.currentPosition;
-
-    if (position != null && _mapController != null) {
-      _mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(position.latitude, position.longitude),
-            zoom: AppConstants.markerZoom,
-          ),
+  void _onMapLongPress(LatLng position) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-      );
-    }
+        child: AddLocationFromMapBottomSheet(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ),
+      ),
+    );
   }
 
   @override

@@ -12,17 +12,6 @@ class RoutesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Geçmiş Rotalar'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<RoutesProvider>().loadRoutes();
-            },
-          ),
-        ],
-      ),
       body: Consumer<RoutesProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {

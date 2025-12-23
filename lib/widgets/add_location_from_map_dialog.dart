@@ -5,28 +5,32 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../core/utils/validators.dart';
 
-// BottomSheet for adding new location
-class AddLocationBottomSheet extends StatefulWidget {
-  const AddLocationBottomSheet({super.key});
+// BottomSheet for adding location from map long-press
+class AddLocationFromMapBottomSheet extends StatefulWidget {
+  final double latitude;
+  final double longitude;
+
+  const AddLocationFromMapBottomSheet({
+    super.key,
+    required this.latitude,
+    required this.longitude,
+  });
 
   @override
-  State<AddLocationBottomSheet> createState() => _AddLocationBottomSheetState();
+  State<AddLocationFromMapBottomSheet> createState() =>
+      _AddLocationFromMapBottomSheetState();
 }
 
-class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
+class _AddLocationFromMapBottomSheetState
+    extends State<AddLocationFromMapBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _latitudeController = TextEditingController();
-  final _longitudeController = TextEditingController();
   final _descriptionController = TextEditingController();
-  bool _useCurrentLocation = false;
   bool _isLoading = false;
 
   @override
   void dispose() {
     _nameController.dispose();
-    _latitudeController.dispose();
-    _longitudeController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -58,11 +62,22 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
               children: [
                 const Icon(Icons.add_location, color: AppTheme.primaryColor),
                 const SizedBox(width: 12),
-                Text(
-                  AppStrings.addLocation,
-                  style: Theme.of(context).textTheme.titleLarge,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppStrings.addLocationOnMap,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Lat: ${widget.latitude.toStringAsFixed(6)}, Lng: ${widget.longitude.toStringAsFixed(6)}',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () => Navigator.pop(context),
@@ -72,12 +87,18 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
           ),
           const Divider(height: 1),
           // Form
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
                     controller: _nameController,
@@ -86,49 +107,9 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                       hintText: AppStrings.locationNameHint,
                       prefixIcon: const Icon(Icons.label),
                     ),
+                    autofocus: true,
                     validator: (value) =>
                         Validators.required(value, AppStrings.locationName),
-                  ),
-                  const SizedBox(height: 16),
-                  CheckboxListTile(
-                    value: _useCurrentLocation,
-                    onChanged: (value) {
-                      setState(() => _useCurrentLocation = value ?? false);
-                      if (_useCurrentLocation) _fillCurrentLocation();
-                    },
-                    title: Text(AppStrings.useCurrentLocation),
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _latitudeController,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.latitude,
-                      hintText: '37.8746',
-                      prefixIcon: const Icon(Icons.location_on),
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                      signed: true,
-                    ),
-                    enabled: !_useCurrentLocation,
-                    validator: Validators.latitude,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _longitudeController,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.longitude,
-                      hintText: '32.4932',
-                      prefixIcon: const Icon(Icons.location_on),
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                      signed: true,
-                    ),
-                    enabled: !_useCurrentLocation,
-                    validator: Validators.longitude,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -138,7 +119,7 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                       hintText: AppStrings.descriptionHint,
                       prefixIcon: const Icon(Icons.description),
                     ),
-                    maxLines: 3,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -163,31 +144,6 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
     );
   }
 
-  Future<void> _fillCurrentLocation() async {
-    setState(() => _isLoading = true);
-
-    final provider = context.read<LocationProvider>();
-    await provider.updateCurrentPosition();
-
-    final position = provider.currentPosition;
-    if (position != null) {
-      _latitudeController.text = position.latitude.toStringAsFixed(6);
-      _longitudeController.text = position.longitude.toStringAsFixed(6);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppStrings.currentLocationError),
-            backgroundColor: AppTheme.error,
-          ),
-        );
-      }
-      setState(() => _useCurrentLocation = false);
-    }
-
-    setState(() => _isLoading = false);
-  }
-
   Future<void> _saveLocation() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -195,8 +151,8 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
 
     final success = await context.read<LocationProvider>().addLocation(
       name: _nameController.text.trim(),
-      latitude: double.parse(_latitudeController.text),
-      longitude: double.parse(_longitudeController.text),
+      latitude: widget.latitude,
+      longitude: widget.longitude,
       description: _descriptionController.text.trim().isEmpty
           ? null
           : _descriptionController.text.trim(),

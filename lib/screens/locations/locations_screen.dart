@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/location_provider.dart';
 import '../../models/location_model.dart';
 import '../../core/theme/app_theme.dart';
-import 'add_location_dialog.dart';
+import 'add_location_dialog.dart'; // Actually BottomSheet now
+import 'edit_location_dialog.dart'; // Actually BottomSheet now
 
 class LocationsScreen extends StatelessWidget {
   const LocationsScreen({super.key});
@@ -11,17 +12,6 @@ class LocationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Konumlar'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<LocationProvider>().loadLocations();
-            },
-          ),
-        ],
-      ),
       body: Consumer<LocationProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
@@ -132,9 +122,16 @@ class LocationsScreen extends StatelessWidget {
   }
 
   void _showAddLocationDialog(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => const AddLocationDialog(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: const AddLocationBottomSheet(),
+      ),
     );
   }
 }
@@ -183,10 +180,33 @@ class _LocationCard extends StatelessWidget {
             ],
           ],
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete, color: AppTheme.error),
-          onPressed: () => _confirmDelete(context),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
+              onPressed: () => _showEditDialog(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete, color: AppTheme.error),
+              onPressed: () => _confirmDelete(context),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: EditLocationBottomSheet(location: location),
       ),
     );
   }

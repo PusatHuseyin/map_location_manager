@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'locations/locations_screen.dart';
 import 'map/map_screen.dart';
 import 'routes/routes_screen.dart';
+import '../providers/theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 1; // Harita ekrani baslangic
+  int _currentIndex = 1;
 
   final List<Widget> _screens = const [
     LocationsScreen(),
@@ -19,9 +21,26 @@ class _HomeScreenState extends State<HomeScreen> {
     RoutesScreen(),
   ];
 
+  final List<String> _titles = const ['Konumlar', 'Harita', 'Rotalar'];
+
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+
     return Scaffold(
+      appBar: AppBar(
+        title: Text(_titles[_currentIndex]),
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeProvider.isDark(context)
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () => themeProvider.toggleTheme(),
+          ),
+        ],
+      ),
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

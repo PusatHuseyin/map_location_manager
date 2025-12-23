@@ -1,26 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/location_provider.dart';
+import '../../models/location_model.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../core/utils/validators.dart';
 
-// BottomSheet for adding new location
-class AddLocationBottomSheet extends StatefulWidget {
-  const AddLocationBottomSheet({super.key});
+// BottomSheet for editing location
+class EditLocationBottomSheet extends StatefulWidget {
+  final LocationModel location;
+
+  const EditLocationBottomSheet({super.key, required this.location});
 
   @override
-  State<AddLocationBottomSheet> createState() => _AddLocationBottomSheetState();
+  State<EditLocationBottomSheet> createState() =>
+      _EditLocationBottomSheetState();
 }
 
-class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
+class _EditLocationBottomSheetState extends State<EditLocationBottomSheet> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _latitudeController = TextEditingController();
-  final _longitudeController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  bool _useCurrentLocation = false;
+  late final TextEditingController _nameController;
+  late final TextEditingController _latitudeController;
+  late final TextEditingController _longitudeController;
+  late final TextEditingController _descriptionController;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.location.name);
+    _latitudeController = TextEditingController(
+      text: widget.location.latitude.toStringAsFixed(6),
+    );
+    _longitudeController = TextEditingController(
+      text: widget.location.longitude.toStringAsFixed(6),
+    );
+    _descriptionController = TextEditingController(
+      text: widget.location.description ?? '',
+    );
+  }
 
   @override
   void dispose() {
@@ -56,10 +74,10 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.add_location, color: AppTheme.primaryColor),
+                const Icon(Icons.edit_location, color: AppTheme.primaryColor),
                 const SizedBox(width: 12),
                 Text(
-                  AppStrings.addLocation,
+                  AppStrings.editLocation,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
@@ -90,17 +108,6 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                         Validators.required(value, AppStrings.locationName),
                   ),
                   const SizedBox(height: 16),
-                  CheckboxListTile(
-                    value: _useCurrentLocation,
-                    onChanged: (value) {
-                      setState(() => _useCurrentLocation = value ?? false);
-                      if (_useCurrentLocation) _fillCurrentLocation();
-                    },
-                    title: Text(AppStrings.useCurrentLocation),
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                  const SizedBox(height: 8),
                   TextFormField(
                     controller: _latitudeController,
                     decoration: InputDecoration(
@@ -112,7 +119,6 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                       decimal: true,
                       signed: true,
                     ),
-                    enabled: !_useCurrentLocation,
                     validator: Validators.latitude,
                   ),
                   const SizedBox(height: 16),
@@ -127,7 +133,6 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                       decimal: true,
                       signed: true,
                     ),
-                    enabled: !_useCurrentLocation,
                     validator: Validators.longitude,
                   ),
                   const SizedBox(height: 16),
@@ -142,7 +147,7 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _saveLocation,
+                    onPressed: _isLoading ? null : _updateLocation,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
@@ -163,37 +168,13 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
     );
   }
 
-  Future<void> _fillCurrentLocation() async {
-    setState(() => _isLoading = true);
-
-    final provider = context.read<LocationProvider>();
-    await provider.updateCurrentPosition();
-
-    final position = provider.currentPosition;
-    if (position != null) {
-      _latitudeController.text = position.latitude.toStringAsFixed(6);
-      _longitudeController.text = position.longitude.toStringAsFixed(6);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppStrings.currentLocationError),
-            backgroundColor: AppTheme.error,
-          ),
-        );
-      }
-      setState(() => _useCurrentLocation = false);
-    }
-
-    setState(() => _isLoading = false);
-  }
-
-  Future<void> _saveLocation() async {
+  Future<void> _updateLocation() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
-    final success = await context.read<LocationProvider>().addLocation(
+    final success = await context.read<LocationProvider>().updateLocation(
+      id: widget.location.id,
       name: _nameController.text.trim(),
       latitude: double.parse(_latitudeController.text),
       longitude: double.parse(_longitudeController.text),
@@ -207,7 +188,7 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppStrings.locationAdded),
+            content: Text(AppStrings.locationUpdated),
             backgroundColor: AppTheme.success,
           ),
         );
@@ -215,7 +196,7 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppStrings.locationAddError),
+            content: Text(AppStrings.locationUpdateError),
             backgroundColor: AppTheme.error,
           ),
         );
