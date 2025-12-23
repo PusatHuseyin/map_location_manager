@@ -130,7 +130,7 @@ class RouteProvider with ChangeNotifier {
       return;
     }
 
-    // Titreşimleri engellemek için mesafe kontrolü (en az 2 metre hareket)
+    // Titreşimleri engellemek için mesafe kontrolü (en az 0.8 metre hareket)
     if (_currentRoutePoints.isNotEmpty) {
       final lastPoint = _currentRoutePoints.last;
       final distanceSinceLastPoint = _locationService.calculateDistance(
@@ -140,9 +140,12 @@ class RouteProvider with ChangeNotifier {
         position.longitude,
       );
 
-      // Çok yakın noktaları kaydetme (GPS gürültüsünü engeller)
-      if (distanceSinceLastPoint < 2.0) {
-        debugPrint('📍 Nokta atlandi (Mesafe < 2m): $distanceSinceLastPoint');
+      // Çok yakın noktaları kaydetme (GPS gürültüsünü engeller ama adımları yakalar)
+      // Ayrıca çok düşük hassasiyetli (accuracy > 15m) noktaları eliyoruz
+      if (distanceSinceLastPoint < 0.8 || position.accuracy > 15.0) {
+        debugPrint(
+          '📍 Nokta atlandi (Mesafe: ${distanceSinceLastPoint.toStringAsFixed(2)}m, Accuracy: ${position.accuracy.toStringAsFixed(1)}m)',
+        );
         return;
       }
     }

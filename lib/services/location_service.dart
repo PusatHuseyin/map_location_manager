@@ -77,7 +77,7 @@ class LocationService {
           accuracy: LocationAccuracy.bestForNavigation,
           distanceFilter: 0,
           forceLocationManager: false,
-          intervalDuration: const Duration(seconds: 3), // 3 saniyede bir zorla
+          intervalDuration: const Duration(seconds: 1), // 1 saniyede bir zorla
           // Arka plan icin onemli
           foregroundNotificationConfig: const ForegroundNotificationConfig(
             notificationText: "Konum takibi devam ediyor",
