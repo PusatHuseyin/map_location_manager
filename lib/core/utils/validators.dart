@@ -1,6 +1,4 @@
-// Input validation utilities
 class Validators {
-  // Validates required fields
   static String? required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName gerekli';

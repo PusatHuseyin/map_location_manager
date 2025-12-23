@@ -28,7 +28,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   void _setupMapData() {
     if (widget.route.points.isEmpty) return;
 
-    // Rota cizgisini olustur
+    // rota cizgisini olustur
     final points = widget.route.points
         .map((p) => LatLng(p.latitude, p.longitude))
         .toList();
@@ -45,17 +45,19 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
         ),
       );
 
-      // Baslangic marker
+      // baslangic marker
       _markers.add(
         Marker(
           markerId: const MarkerId('start'),
           position: points.first,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
           infoWindow: const InfoWindow(title: 'Baslangic'),
         ),
       );
 
-      // Bitis marker
+      // bitis marker
       _markers.add(
         Marker(
           markerId: const MarkerId('end'),
@@ -72,12 +74,10 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
     final dateFormat = DateFormat('dd MMM yyyy, HH:mm');
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rota Detayi'),
-      ),
+      appBar: AppBar(title: const Text('Rota Detayi')),
       body: Column(
         children: [
-          // Rota bilgileri
+          // rota bilgileri
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -92,13 +92,17 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.calendar_today, size: 16, color: AppTheme.textSecondary),
+                    Icon(
+                      Icons.calendar_today,
+                      size: 16,
+                      color: AppTheme.textSecondary,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       dateFormat.format(widget.route.startTime),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.textSecondary,
-                          ),
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -130,14 +134,18 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
             ),
           ),
           const Divider(height: 1),
-          // Harita
+          // harita
           Expanded(
             child: widget.route.points.isEmpty
                 ? const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.map, size: 64, color: AppTheme.textSecondary),
+                        Icon(
+                          Icons.map,
+                          size: 64,
+                          color: AppTheme.textSecondary,
+                        ),
                         SizedBox(height: 16),
                         Text('Bu rotada kayitli nokta bulunamadi'),
                       ],
@@ -170,7 +178,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   void _fitRouteInView() async {
     if (_mapController == null || widget.route.points.isEmpty) return;
 
-    // Calculate bounds
+    // bounds hesapla
     double minLat = widget.route.points.first.latitude;
     double maxLat = widget.route.points.first.latitude;
     double minLng = widget.route.points.first.longitude;
@@ -189,9 +197,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
     );
 
     await Future.delayed(const Duration(milliseconds: 100));
-    _mapController!.animateCamera(
-      CameraUpdate.newLatLngBounds(bounds, 50),
-    );
+    _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
   }
 
   @override
@@ -229,17 +235,17 @@ class _DetailStatItem extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
         ),
         const SizedBox(height: 4),
         Text(
           value,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
         ),
       ],
     );

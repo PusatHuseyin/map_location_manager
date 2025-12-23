@@ -15,15 +15,12 @@ class LocationService {
   Position? _lastPosition;
   Position? get lastPosition => _lastPosition;
 
-  // Konum izinlerini kontrol et ve iste
   Future<bool> checkAndRequestPermissions() async {
-    // Check if location services enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return false;
     }
 
-    // Check permission status
     LocationPermission permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
@@ -34,7 +31,6 @@ class LocationService {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions permanently denied, open settings
       await openAppSettings();
       return false;
     }
@@ -42,7 +38,6 @@ class LocationService {
     return true;
   }
 
-  // Guncel konumu al
   Future<Position?> getCurrentPosition() async {
     try {
       final hasPermission = await checkAndRequestPermissions();
@@ -62,32 +57,26 @@ class LocationService {
     }
   }
 
-  // Canli konum takibini baslat
   Future<bool> startLocationTracking() async {
     try {
       final hasPermission = await checkAndRequestPermissions();
       if (!hasPermission) return false;
 
-      // Stop existing stream if any
       await stopLocationTracking();
 
       const locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 5, // Minimum 5 metre hareket
+        distanceFilter: 5,
         timeLimit: Duration(seconds: 5),
       );
 
-      _positionStreamSubscription = Geolocator.getPositionStream(
-        locationSettings: locationSettings,
-      ).listen(
-        (Position position) {
-          _lastPosition = position;
-          _positionController.add(position);
-        },
-        onError: (error) {
-          // Handle error silently
-        },
-      );
+      _positionStreamSubscription =
+          Geolocator.getPositionStream(
+            locationSettings: locationSettings,
+          ).listen((Position position) {
+            _lastPosition = position;
+            _positionController.add(position);
+          }, onError: (error) {});
 
       return true;
     } catch (e) {
@@ -95,13 +84,11 @@ class LocationService {
     }
   }
 
-  // Canli konum takibini durdur
   Future<void> stopLocationTracking() async {
     await _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
   }
 
-  // Iki nokta arasindaki mesafeyi hesapla (metre cinsinden)
   double calculateDistance(
     double startLat,
     double startLng,
@@ -111,7 +98,8 @@ class LocationService {
     return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
   }
 
-  // Birden fazla nokta arasindaki toplam mesafeyi hesapla
+  // birden fazla nokta arasindaki toplam mesafeyi hesapla
+
   double calculateTotalDistance(List<Position> positions) {
     if (positions.length < 2) return 0.0;
 
@@ -128,7 +116,7 @@ class LocationService {
     return totalDistance;
   }
 
-  // Service temizleme
+  // service temizleme
   void dispose() {
     _positionStreamSubscription?.cancel();
     _positionController.close();

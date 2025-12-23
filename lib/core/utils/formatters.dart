@@ -1,8 +1,6 @@
 import 'package:intl/intl.dart';
 
-// Data formatting utilities
 class Formatters {
-  // Format distance: km if >= 1000m, otherwise meters
   static String distance(double meters) {
     if (meters >= 1000) {
       return '${(meters / 1000).toStringAsFixed(2)} km';
@@ -10,7 +8,6 @@ class Formatters {
     return '${meters.toStringAsFixed(0)} m';
   }
 
-  // Format duration: HH:MM:SS or MM:SS
   static String duration(int seconds) {
     final hours = seconds ~/ 3600;
     final minutes = (seconds % 3600) ~/ 60;
@@ -25,7 +22,6 @@ class Formatters {
         '${secs.toString().padLeft(2, '0')}';
   }
 
-  // Format duration as Turkish text
   static String durationText(int seconds) {
     final hours = seconds ~/ 3600;
     final minutes = (seconds % 3600) ~/ 60;

@@ -38,13 +38,12 @@ class RouteProvider with ChangeNotifier {
     _checkForActiveRoute();
   }
 
-  // Aktif rota var mi kontrol et
   Future<void> _checkForActiveRoute() async {
     try {
       _activeRoute = await _databaseService.getActiveRoute();
       if (_activeRoute != null) {
         _currentRoutePoints = _activeRoute!.points;
-        // Calculate elapsed time if route is still active
+
         if (_activeRoute!.isActive) {
           _elapsedSeconds = DateTime.now()
               .difference(_activeRoute!.startTime)
@@ -52,19 +51,14 @@ class RouteProvider with ChangeNotifier {
         }
         notifyListeners();
       }
-    } catch (e) {
-      // Handle error silently
-    }
+    } catch (e) {}
   }
 
-  // Rota kaydini baslat
   Future<bool> startRouteTracking() async {
     try {
-      // Konum izinlerini kontrol et
       final hasPermission = await _locationService.checkAndRequestPermissions();
       if (!hasPermission) return false;
 
-      // Yeni rota olustur
       final routeId = _uuid.v4();
       _activeRoute = RouteModel(
         id: routeId,
@@ -77,17 +71,14 @@ class RouteProvider with ChangeNotifier {
       _currentRoutePoints = [];
       _elapsedSeconds = 0;
 
-      // Konum takibini baslat
       await _locationService.startLocationTracking();
 
-      // Konum guncellemelerini dinle
       _positionSubscription = _locationService.positionStream.listen((
         position,
       ) {
         _addRoutePoint(position);
       });
 
-      // Duration timer baslat
       _durationTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         _elapsedSeconds++;
         notifyListeners();
@@ -100,7 +91,6 @@ class RouteProvider with ChangeNotifier {
     }
   }
 
-  // Rota noktasi ekle
   void _addRoutePoint(Position position) {
     if (_activeRoute == null) return;
 
@@ -119,7 +109,6 @@ class RouteProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Stop route tracking
   Future<bool> stopRouteTracking({String? customName}) async {
     if (_activeRoute == null) return false;
 
@@ -131,7 +120,6 @@ class RouteProvider with ChangeNotifier {
       _durationTimer?.cancel();
       _durationTimer = null;
 
-      // Calculate total distance
       double totalDistance = 0.0;
       if (_currentRoutePoints.length >= 2) {
         for (int i = 0; i < _currentRoutePoints.length - 1; i++) {
@@ -144,7 +132,6 @@ class RouteProvider with ChangeNotifier {
         }
       }
 
-      // Update route with custom name if provided
       final updatedRoute = _activeRoute!.copyWith(
         name: customName ?? _activeRoute!.name,
         endTime: DateTime.now(),
@@ -166,7 +153,6 @@ class RouteProvider with ChangeNotifier {
     }
   }
 
-  // Hesaplanan mesafe (canli)
   double get currentDistance {
     if (_currentRoutePoints.length < 2) return 0.0;
 

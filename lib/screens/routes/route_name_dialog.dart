@@ -4,7 +4,6 @@ import '../../providers/route_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 
-// Dialog for naming route when stopping tracking
 class RouteNameDialog extends StatefulWidget {
   const RouteNameDialog({super.key});
 
@@ -20,7 +19,6 @@ class _RouteNameDialogState extends State<RouteNameDialog> {
   @override
   void initState() {
     super.initState();
-    // Generate default name
     final now = DateTime.now();
     _nameController.text =
         'Rota ${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';

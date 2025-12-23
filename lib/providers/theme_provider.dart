@@ -10,7 +10,6 @@ class ThemeProvider with ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
-  // Check if current theme is dark
   bool isDark(BuildContext context) {
     if (_themeMode == ThemeMode.system) {
       return MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -22,7 +21,6 @@ class ThemeProvider with ChangeNotifier {
     _loadThemeMode();
   }
 
-  // Load theme from SharedPreferences
   Future<void> _loadThemeMode() async {
     _prefs = await SharedPreferences.getInstance();
     final themeModeIndex = _prefs?.getInt(_themeKey) ?? 0;
@@ -30,7 +28,6 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Set and persist theme mode
   Future<void> setThemeMode(ThemeMode mode) async {
     _themeMode = mode;
     notifyListeners();
@@ -39,7 +36,6 @@ class ThemeProvider with ChangeNotifier {
     await _prefs!.setInt(_themeKey, mode.index);
   }
 
-  // Toggle between light and dark
   Future<void> toggleTheme() async {
     if (_themeMode == ThemeMode.light) {
       await setThemeMode(ThemeMode.dark);

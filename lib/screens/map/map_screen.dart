@@ -8,7 +8,7 @@ import '../../core/utils/app_strings.dart';
 import '../../providers/location_provider.dart';
 import '../../providers/route_provider.dart';
 import '../../models/location_model.dart';
-import '../../widgets/add_location_from_map_dialog.dart'; // Actually BottomSheet
+import '../../widgets/add_location_from_map_dialog.dart';
 import '../../core/utils/map_styles.dart';
 import '../routes/route_name_dialog.dart';
 
@@ -33,18 +33,17 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _initializeLocation() async {
     final locationProvider = context.read<LocationProvider>();
-    // Check permission and update position
+
     final hasPermission = await locationProvider.checkPermissions();
 
     if (mounted) {
       if (hasPermission) {
         setState(() => _isInitialized = true);
         _updateMarkersAndRoute();
-        // Start tracking if permission granted
+
         locationProvider.updateCurrentPosition();
         locationProvider.startLocationTracking();
       } else {
-        // If permission denied, ensure we show retry UI
         setState(() => _isInitialized = false);
       }
     }
@@ -60,17 +59,14 @@ class _MapScreenState extends State<MapScreen> {
       _markers.clear();
       _polylines.clear();
 
-      // Kaydedilmis konumlari marker olarak ekle
       for (var location in locationProvider.locations) {
         _markers.add(_createLocationMarker(location));
       }
 
-      // Mevcut konumu marker olarak ekle
       if (locationProvider.currentPosition != null) {
         _markers.add(_createCurrentLocationMarker(locationProvider));
       }
 
-      // Aktif rota varsa ciz
       if (routeProvider.isTracking &&
           routeProvider.currentRoutePoints.isNotEmpty) {
         _polylines.add(_createActiveRoutePolyline(routeProvider));
@@ -256,12 +252,10 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _toggleRouteTracking(RouteProvider provider) async {
     if (provider.isTracking) {
-      // Show route name dialog
       await showDialog<String>(
         context: context,
         builder: (context) => const RouteNameDialog(),
       );
-      // Dialog handles the stop tracking
     } else {
       final success = await provider.startRouteTracking();
       if (success) {

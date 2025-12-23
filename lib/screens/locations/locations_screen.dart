@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/location_provider.dart';
 import '../../models/location_model.dart';
 import '../../core/theme/app_theme.dart';
-import 'add_location_dialog.dart'; // Actually BottomSheet now
-import 'edit_location_dialog.dart'; // Actually BottomSheet now
+import 'add_location_dialog.dart';
+import 'edit_location_dialog.dart';
 
 class LocationsScreen extends StatelessWidget {
   const LocationsScreen({super.key});

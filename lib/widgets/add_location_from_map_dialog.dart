@@ -5,7 +5,6 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../core/utils/validators.dart';
 
-// BottomSheet for adding location from map long-press
 class AddLocationFromMapBottomSheet extends StatefulWidget {
   final double latitude;
   final double longitude;
@@ -45,7 +44,6 @@ class _AddLocationFromMapBottomSheetState
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -55,7 +53,6 @@ class _AddLocationFromMapBottomSheetState
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          // Header
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -86,7 +83,6 @@ class _AddLocationFromMapBottomSheetState
             ),
           ),
           const Divider(height: 1),
-          // Form
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

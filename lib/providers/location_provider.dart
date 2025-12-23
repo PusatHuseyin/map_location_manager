@@ -29,7 +29,7 @@ class LocationProvider with ChangeNotifier {
     await loadLocations();
   }
 
-  // Tum konumlari yukle
+  // tum konumlari yukle
   Future<void> loadLocations() async {
     _setLoading(true);
     try {
@@ -69,7 +69,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Konum güncelleme
+  // konum güncelleme
   Future<bool> updateLocation({
     required String id,
     required String name,
@@ -84,7 +84,7 @@ class LocationProvider with ChangeNotifier {
         latitude: latitude,
         longitude: longitude,
         description: description,
-        createdAt: DateTime.now(), // Will be ignored by update
+        createdAt: DateTime.now(),
       );
 
       await _databaseService.updateLocation(location);
@@ -110,7 +110,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Mevcut konumu guncelleme
+  // mevcut konumu güncelleme
   Future<void> updateCurrentPosition() async {
     try {
       final position = await _locationService.getCurrentPosition();
@@ -125,7 +125,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  // Canli konum takibini baslatma
+  // canli konum takibini baslatma
   void startLocationTracking() {
     _locationService.positionStream.listen((position) {
       _currentPosition = position;
@@ -133,7 +133,7 @@ class LocationProvider with ChangeNotifier {
     });
   }
 
-  // Izin kontrolu yapma
+  // izin kontrolu yapma
   Future<bool> checkPermissions() async {
     final hasPermission = await _locationService.checkAndRequestPermissions();
     if (hasPermission) {

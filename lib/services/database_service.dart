@@ -22,16 +22,10 @@ class DatabaseService {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'map_location_manager.db');
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
-  // Database tablolarini olustur
   Future<void> _onCreate(Database db, int version) async {
-    // Locations table
     await db.execute('''
       CREATE TABLE locations (
         id TEXT PRIMARY KEY,
@@ -43,7 +37,6 @@ class DatabaseService {
       )
     ''');
 
-    // Routes table
     await db.execute('''
       CREATE TABLE routes (
         id TEXT PRIMARY KEY,
@@ -55,7 +48,6 @@ class DatabaseService {
       )
     ''');
 
-    // Route points table
     await db.execute('''
       CREATE TABLE route_points (
         id TEXT PRIMARY KEY,
@@ -69,17 +61,18 @@ class DatabaseService {
       )
     ''');
 
-    // Index for better query performance
     await db.execute(
-        'CREATE INDEX idx_route_points_route_id ON route_points(route_id)');
+      'CREATE INDEX idx_route_points_route_id ON route_points(route_id)',
+    );
   }
-
-  // LOCATION OPERATIONS
 
   Future<int> insertLocation(LocationModel location) async {
     final db = await database;
-    return await db.insert('locations', location.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(
+      'locations',
+      location.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<LocationModel>> getAllLocations() async {
@@ -116,19 +109,16 @@ class DatabaseService {
 
   Future<int> deleteLocation(String id) async {
     final db = await database;
-    return await db.delete(
-      'locations',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('locations', where: 'id = ?', whereArgs: [id]);
   }
-
-  // ROUTE OPERATIONS
 
   Future<int> insertRoute(RouteModel route) async {
     final db = await database;
-    return await db.insert('routes', route.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(
+      'routes',
+      route.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<RouteModel>> getAllRoutes() async {
@@ -188,20 +178,17 @@ class DatabaseService {
 
   Future<int> deleteRoute(String id) async {
     final db = await database;
-    // Cascade delete route points automatically
-    return await db.delete(
-      'routes',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
 
-  // ROUTE POINT OPERATIONS
+    return await db.delete('routes', where: 'id = ?', whereArgs: [id]);
+  }
 
   Future<int> insertRoutePoint(RoutePointModel point) async {
     final db = await database;
-    return await db.insert('route_points', point.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(
+      'route_points',
+      point.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<RoutePointModel>> getRoutePoints(String routeId) async {
@@ -213,8 +200,7 @@ class DatabaseService {
       orderBy: 'timestamp ASC',
     );
 
-    return List.generate(
-        maps.length, (i) => RoutePointModel.fromMap(maps[i]));
+    return List.generate(maps.length, (i) => RoutePointModel.fromMap(maps[i]));
   }
 
   Future<int> deleteRoutePoints(String routeId) async {
@@ -225,8 +211,6 @@ class DatabaseService {
       whereArgs: [routeId],
     );
   }
-
-  // UTILITY OPERATIONS
 
   Future<void> clearAllData() async {
     final db = await database;

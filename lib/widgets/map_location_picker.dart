@@ -3,7 +3,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
 
-// Map picker for selecting location
 class MapLocationPicker extends StatefulWidget {
   const MapLocationPicker({super.key});
 

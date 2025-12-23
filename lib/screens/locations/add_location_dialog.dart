@@ -7,7 +7,6 @@ import '../../core/utils/app_strings.dart';
 import '../../core/utils/validators.dart';
 import '../../widgets/map_location_picker.dart';
 
-// BottomSheet for adding new location
 class AddLocationBottomSheet extends StatefulWidget {
   const AddLocationBottomSheet({super.key});
 
@@ -43,7 +42,6 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -53,7 +51,7 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          // Header
+
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -73,7 +71,7 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
             ),
           ),
           const Divider(height: 1),
-          // Form
+
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

@@ -1,6 +1,6 @@
-// Centralized string constants
+// Merkezi string sabitleri
 class AppStrings {
-  // App info
+  // App infos
   static const String appName = 'Harita & Konum Yönetimi';
   static const String appVersion = '1.0.0';
 
@@ -129,13 +129,4 @@ class AppStrings {
   static const String noInternetConnection = 'İnternet bağlantısı yok';
   static const String serverError = 'Sunucu hatası';
   static const String unknownError = 'Bilinmeyen hata';
-
-  // Splash
-  static const String initializing = 'Başlatılıyor...';
-  static const String preparingDatabase = 'Veritabanı hazırlanıyor...';
-  static const String checkingPermissions =
-      'Konum izinleri kontrol ediliyor...';
-  static const String loadingData = 'Veriler yükleniyor...';
-  static const String completed = 'Tamamlandı!';
-  static const String waitingForPermission = 'Konum izni bekleniyor...';
 }

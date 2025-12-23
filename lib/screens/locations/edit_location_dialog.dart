@@ -6,7 +6,6 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../core/utils/validators.dart';
 
-// BottomSheet for editing location
 class EditLocationBottomSheet extends StatefulWidget {
   final LocationModel location;
 
@@ -59,7 +58,6 @@ class _EditLocationBottomSheetState extends State<EditLocationBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.only(top: 12),
             width: 40,
@@ -69,7 +67,7 @@ class _EditLocationBottomSheetState extends State<EditLocationBottomSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          // Header
+
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -89,7 +87,7 @@ class _EditLocationBottomSheetState extends State<EditLocationBottomSheet> {
             ),
           ),
           const Divider(height: 1),
-          // Form
+
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

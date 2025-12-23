@@ -19,12 +19,12 @@ class RoutesProvider with ChangeNotifier {
     loadRoutes();
   }
 
-  // Tum rotalari yukle
+  // tum rotalari yukle
   Future<void> loadRoutes() async {
     _setLoading(true);
     try {
       _routes = await _databaseService.getAllRoutes();
-      // Sadece tamamlanmis rotalari getir
+      // sadece tamamlanmis rotalari getir
       _routes = _routes.where((route) => !route.isActive).toList();
       _error = null;
     } catch (e) {
@@ -34,13 +34,13 @@ class RoutesProvider with ChangeNotifier {
     }
   }
 
-  // Rota sec
+  // rota sec
   void selectRoute(RouteModel? route) {
     _selectedRoute = route;
     notifyListeners();
   }
 
-  // Rota sil
+  // rota sil
   Future<bool> deleteRoute(String id) async {
     try {
       await _databaseService.deleteRoute(id);
@@ -56,7 +56,7 @@ class RoutesProvider with ChangeNotifier {
     }
   }
 
-  // Rotayi ID ile getir
+  // rota ID ile getir
   Future<RouteModel?> getRouteById(String id) async {
     try {
       return await _databaseService.getRoute(id);

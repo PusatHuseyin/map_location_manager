@@ -15,7 +15,6 @@ class LocationModel {
     required this.createdAt,
   });
 
-  // Database model
   factory LocationModel.fromMap(Map<String, dynamic> map) {
     return LocationModel(
       id: map['id'] as String,

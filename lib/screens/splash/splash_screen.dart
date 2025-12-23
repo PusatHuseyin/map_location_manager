@@ -32,7 +32,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _initializeAnimations() {
-    // Fade animation
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -41,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen>
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
 
-    // Slide animation
     _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -51,7 +49,6 @@ class _SplashScreenState extends State<SplashScreen>
           CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
         );
 
-    // Rotate animation (continuous)
     _rotateController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
@@ -67,12 +64,10 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeApp() async {
     try {
-      // Database baslat
       await _updateProgress(0.2);
       await Future.delayed(const Duration(milliseconds: 600));
       await DatabaseService().database;
 
-      // Step 2: Konum izinlerini kontrol et
       await _updateProgress(0.4);
       await Future.delayed(const Duration(milliseconds: 600));
 
@@ -88,7 +83,6 @@ class _SplashScreenState extends State<SplashScreen>
         }
       }
 
-      // Step 3: Verileri yukle
       await _updateProgress(0.7);
       await Future.delayed(const Duration(milliseconds: 600));
 
@@ -156,21 +150,15 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFFFC927,
-      ), // Ensure no white background shows
+      backgroundColor: const Color(0xFFFFC927),
       body: Container(
-        width: double.infinity, // Force full width
-        height: double.infinity, // Force full height
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFFFE082), // Lighter Amber
-              Color(0xFFFFC927), // Main Color
-              Color(0xFFFF6F00), // Deep Orange
-            ],
+            colors: [Color(0xFFFFE082), Color(0xFFFFC927), Color(0xFFFF6F00)],
           ),
         ),
         child: SafeArea(
@@ -180,14 +168,12 @@ class _SplashScreenState extends State<SplashScreen>
               children: [
                 const Spacer(flex: 2),
 
-                // Logo & App Name
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
                     position: _slideAnimation,
                     child: Column(
                       children: [
-                        // Animated Map Icon
                         AnimatedBuilder(
                           animation: _rotateAnimation,
                           builder: (context, child) {
@@ -222,7 +208,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                         const SizedBox(height: 48),
 
-                        // App Name with Style
                         const Text(
                           'HARİTA & KONUM',
                           style: TextStyle(
@@ -266,14 +251,12 @@ class _SplashScreenState extends State<SplashScreen>
 
                 const Spacer(flex: 2),
 
-                // Progress Section
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: Column(
                     children: [
-                      // Progress Bar
                       Container(
-                        width: double.infinity, // Fixed width track
+                        width: double.infinity,
                         height: 6,
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.3),
@@ -287,7 +270,7 @@ class _SplashScreenState extends State<SplashScreen>
                             curve: Curves.easeInOut,
                             width:
                                 MediaQuery.of(context).size.width *
-                                0.8 * // Match padding logic effectively
+                                0.8 *
                                 _progress,
                             height: 6,
                             decoration: const BoxDecoration(
