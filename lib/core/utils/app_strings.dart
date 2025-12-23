@@ -2,7 +2,6 @@
 class AppStrings {
   // App infos
   static const String appName = 'Harita & Konum Yönetimi';
-  static const String appVersion = '1.0.0';
 
   // General
   static const String ok = 'Tamam';
