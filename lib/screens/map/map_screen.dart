@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../providers/location_provider.dart';
 import '../../providers/route_provider.dart';
 import '../../models/location_model.dart';
+import '../../core/utils/formatters.dart';
 import '../../widgets/add_location_from_map_dialog.dart';
 import '../../core/utils/map_styles.dart';
 import '../routes/route_name_dialog.dart';
@@ -24,6 +26,7 @@ class _MapScreenState extends State<MapScreen> {
   final Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
   bool _isInitialized = false;
+  String? _lastFocusedLocationId;
 
   @override
   void initState() {
@@ -75,13 +78,28 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Marker _createLocationMarker(LocationModel location) {
+    String? distanceText;
+    final locationProvider = context.read<LocationProvider>();
+
+    if (locationProvider.currentPosition != null) {
+      final distance = Geolocator.distanceBetween(
+        locationProvider.currentPosition!.latitude,
+        locationProvider.currentPosition!.longitude,
+        location.latitude,
+        location.longitude,
+      );
+      distanceText = Formatters.distance(distance);
+    }
+
     return Marker(
       markerId: MarkerId(location.id),
       position: LatLng(location.latitude, location.longitude),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
       infoWindow: InfoWindow(
         title: location.name,
-        snippet: location.description,
+        snippet: distanceText != null
+            ? 'Uzaklık: $distanceText\n${location.description ?? ""}'
+            : location.description,
       ),
     );
   }
@@ -113,6 +131,25 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locationProvider = context.watch<LocationProvider>();
+    final targetLocation = locationProvider.targetLocation;
+
+    if (targetLocation != null &&
+        targetLocation.id != _lastFocusedLocationId &&
+        _mapController != null &&
+        _isInitialized) {
+      _lastFocusedLocationId = targetLocation.id;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController!.animateCamera(
+          CameraUpdate.newLatLngZoom(
+            LatLng(targetLocation.latitude, targetLocation.longitude),
+            18,
+          ),
+        );
+        _mapController!.showMarkerInfoWindow(MarkerId(targetLocation.id));
+      });
+    }
+
     return Scaffold(
       body: Stack(
         children: [_buildMap(), _buildRouteControls(), _buildRouteInfo()],

@@ -21,6 +21,12 @@ class LocationProvider with ChangeNotifier {
   String? get error => _error;
   bool get hasLocationPermission => _currentPosition != null;
 
+  // Haritada gosterilecek hedef konum
+  LocationModel? _targetLocation;
+  LocationModel? get targetLocation => _targetLocation;
+  bool _shouldNavigateToMap = false;
+  bool get shouldNavigateToMap => _shouldNavigateToMap;
+
   LocationProvider() {
     _init();
   }
@@ -152,6 +158,22 @@ class LocationProvider with ChangeNotifier {
 
   void clearError() {
     _error = null;
+    notifyListeners();
+  }
+
+  void setTargetLocation(LocationModel location) {
+    _targetLocation = location;
+    _shouldNavigateToMap = true;
+    notifyListeners();
+  }
+
+  void clearTargetLocation() {
+    _targetLocation = null;
+    notifyListeners();
+  }
+
+  void consumeNavigation() {
+    _shouldNavigateToMap = false;
     notifyListeners();
   }
 

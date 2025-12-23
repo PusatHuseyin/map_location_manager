@@ -28,20 +28,35 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
   void _setupMapData() {
     if (widget.route.points.isEmpty) return;
 
-    // rota cizgisini olustur
     final points = widget.route.points
         .map((p) => LatLng(p.latitude, p.longitude))
         .toList();
 
     setState(() {
+      // 1. Kenar cizgisi (Dis hat - Border)
+      _polylines.add(
+        Polyline(
+          polylineId: PolylineId('${widget.route.id}_border'),
+          points: points,
+          color: const Color(0xFF1A237E), // Deep Blue Border
+          width: 8, // Daha genis
+          startCap: Cap.roundCap,
+          endCap: Cap.roundCap,
+          zIndex: 1, // Altta kalsin
+        ),
+      );
+
+      // 2. Ana cizgi (Ic hat - Core)
       _polylines.add(
         Polyline(
           polylineId: PolylineId(widget.route.id),
           points: points,
-          color: AppTheme.routeCompleted,
-          width: 5,
+          color: const Color(0xFF448AFF), // Bright Blue
+          width: 5, // Biraz daha ince
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
+          zIndex: 2, // Ustte olsun
+          patterns: [PatternItem.dash(30), PatternItem.gap(20)],
         ),
       );
 
@@ -53,7 +68,11 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
           icon: BitmapDescriptor.defaultMarkerWithHue(
             BitmapDescriptor.hueGreen,
           ),
-          infoWindow: const InfoWindow(title: 'Baslangic'),
+          infoWindow: InfoWindow(
+            title: 'Başlangıç',
+            snippet:
+                'Saat: ${DateFormat('HH:mm').format(widget.route.startTime)}',
+          ),
         ),
       );
 
@@ -63,7 +82,12 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
           markerId: const MarkerId('end'),
           position: points.last,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          infoWindow: const InfoWindow(title: 'Bitis'),
+          infoWindow: InfoWindow(
+            title: 'Bitiş',
+            snippet: widget.route.endTime != null
+                ? 'Saat: ${DateFormat('HH:mm').format(widget.route.endTime!)}'
+                : null,
+          ),
         ),
       );
     });

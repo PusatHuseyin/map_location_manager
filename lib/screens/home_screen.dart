@@ -4,6 +4,7 @@ import 'locations/locations_screen.dart';
 import 'map/map_screen.dart';
 import 'routes/routes_screen.dart';
 import '../providers/theme_provider.dart';
+import '../providers/location_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+    final locationProvider = context.watch<LocationProvider>();
+
+    if (locationProvider.shouldNavigateToMap) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() => _currentIndex = 1);
+        locationProvider.consumeNavigation();
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/route_provider.dart';
+import '../../providers/routes_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 
@@ -93,6 +94,9 @@ class _RouteNameDialogState extends State<RouteNameDialog> {
 
     if (mounted) {
       if (success) {
+        if (mounted) {
+          context.read<RoutesProvider>().loadRoutes();
+        }
         Navigator.pop(context, routeName);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

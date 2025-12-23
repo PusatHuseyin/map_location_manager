@@ -184,6 +184,13 @@ class _LocationCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
+              tooltip: 'Haritada Göster',
+              icon: const Icon(Icons.map, color: AppTheme.primaryColor),
+              onPressed: () {
+                context.read<LocationProvider>().setTargetLocation(location);
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
               onPressed: () => _showEditDialog(context),
             ),
