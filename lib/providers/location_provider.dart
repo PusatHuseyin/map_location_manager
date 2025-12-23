@@ -179,7 +179,7 @@ class LocationProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _locationService.dispose();
+    // LocationService singleton oldugu icin tamamen kapatmiyoruz
     super.dispose();
   }
 }

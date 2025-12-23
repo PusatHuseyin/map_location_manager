@@ -69,12 +69,36 @@ class LocationService {
       await stopLocationTracking();
       debugPrint('🔵 LocationService: Position stream başlatılıyor...');
 
-      // Maksimum hassasiyet - her 1 metrede guncelleme
-      const locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.bestForNavigation, // En yuksek hassasiyet
-        distanceFilter: 1, // 1 metre hareket = guncelleme
-        timeLimit: Duration(seconds: 1), // 1 saniyede bir kontrol
-      );
+      // Platforma ozel gelismis ayarlar
+      late LocationSettings locationSettings;
+
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+          forceLocationManager: false,
+          intervalDuration: const Duration(seconds: 3), // 3 saniyede bir zorla
+          // Arka plan icin onemli
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "Konum takibi devam ediyor",
+            notificationTitle: "Rota Kaydı Aktif",
+            enableWakeLock: true,
+          ),
+        );
+      } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS) {
+        locationSettings = AppleSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+          pauseLocationUpdatesAutomatically: false,
+          showBackgroundLocationIndicator: true,
+        );
+      } else {
+        locationSettings = const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+        );
+      }
 
       // StreamController zaten constructor'da/field'da initialize edildi
 

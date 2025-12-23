@@ -130,6 +130,23 @@ class RouteProvider with ChangeNotifier {
       return;
     }
 
+    // Titreşimleri engellemek için mesafe kontrolü (en az 2 metre hareket)
+    if (_currentRoutePoints.isNotEmpty) {
+      final lastPoint = _currentRoutePoints.last;
+      final distanceSinceLastPoint = _locationService.calculateDistance(
+        lastPoint.latitude,
+        lastPoint.longitude,
+        position.latitude,
+        position.longitude,
+      );
+
+      // Çok yakın noktaları kaydetme (GPS gürültüsünü engeller)
+      if (distanceSinceLastPoint < 2.0) {
+        debugPrint('📍 Nokta atlandi (Mesafe < 2m): $distanceSinceLastPoint');
+        return;
+      }
+    }
+
     final point = RoutePointModel(
       id: _uuid.v4(),
       routeId: _activeRoute!.id,
@@ -152,6 +169,17 @@ class RouteProvider with ChangeNotifier {
     if (_activeRoute == null) return false;
 
     try {
+      debugPrint('🏁 RouteProvider: Rota durduruluyor...');
+
+      // SON KONUMU GARANTI ET: Durdururken son kez konum al
+      final finalPosition = await _locationService.getCurrentPosition();
+      if (finalPosition != null) {
+        debugPrint(
+          '📍 Final pozisyonu alindi: (${finalPosition.latitude}, ${finalPosition.longitude})',
+        );
+        _addRoutePoint(finalPosition);
+      }
+
       await _locationService.stopLocationTracking();
       await _positionSubscription?.cancel();
       _positionSubscription = null;

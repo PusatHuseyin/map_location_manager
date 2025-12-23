@@ -133,8 +133,8 @@ class _MapScreenState extends State<MapScreen> {
       Polyline(
         polylineId: const PolylineId('active_route_shadow'),
         points: points,
-        color: AppTheme.primaryDark.withValues(alpha: 0.7), // Shadow
-        width: 10,
+        color: AppTheme.primaryDark.withValues(alpha: 0.4), // Shadow
+        width: 5,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         jointType: JointType.round,
@@ -148,26 +148,11 @@ class _MapScreenState extends State<MapScreen> {
         polylineId: const PolylineId('active_route_main'),
         points: points,
         color: AppTheme.primaryColor, // Theme Color
-        width: 7,
+        width: 3,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         jointType: JointType.round,
         zIndex: 2,
-      ),
-    );
-
-    // 3. Ust tabaka - Beyaz dash pattern
-    _polylines.add(
-      Polyline(
-        polylineId: const PolylineId('active_route_dash'),
-        points: points,
-        color: Colors.white.withValues(alpha: 0.6),
-        width: 5,
-        startCap: Cap.roundCap,
-        endCap: Cap.roundCap,
-        jointType: JointType.round,
-        patterns: [PatternItem.dash(15), PatternItem.gap(10)],
-        zIndex: 3,
       ),
     );
   }
@@ -444,8 +429,8 @@ class _MapScreenState extends State<MapScreen> {
         Polyline(
           polylineId: PolylineId('${route.id}_shadow'),
           points: points,
-          color: AppTheme.primaryDark.withValues(alpha: 0.8), // Shadow
-          width: 12,
+          color: AppTheme.primaryDark.withValues(alpha: 0.4), // Shadow
+          width: 6,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
           jointType: JointType.round,
@@ -459,26 +444,11 @@ class _MapScreenState extends State<MapScreen> {
           polylineId: PolylineId('${route.id}_main'),
           points: points,
           color: AppTheme.primaryColor, // Theme Color
-          width: 8,
+          width: 4,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
           jointType: JointType.round,
           zIndex: 2,
-        ),
-      );
-
-      // 3. Ust tabaka - Beyaz dash pattern (yol uzerindeki cizgiler)
-      _polylines.add(
-        Polyline(
-          polylineId: PolylineId('${route.id}_dash'),
-          points: points,
-          color: Colors.white.withValues(alpha: 0.5),
-          width: 6,
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
-          jointType: JointType.round,
-          patterns: [PatternItem.dash(20), PatternItem.gap(15)],
-          zIndex: 3,
         ),
       );
 
