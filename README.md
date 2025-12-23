@@ -42,7 +42,8 @@ Projeyi çalıştırmak için standart Flutter adımlarını takip edebilirsiniz
     - flutter pub get
     - flutter run
 
-Not: `AndroidManifest.xml` ve `Info.plist` dosyaları hali hazırda yapılandırılmıştır. Google Maps API Key tanımlıdir
+Not: `AndroidManifest.xml` ve `Info.plist` dosyaları hali hazırda yapılandırılmıştır. Google Maps API Key tanımlıdir.
+Şimdilik sadece 'android' için yapılandırılmıştır.
 
 # Teslimat İçeriği
 
