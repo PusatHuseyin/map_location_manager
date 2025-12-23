@@ -28,6 +28,10 @@ class _MapScreenState extends State<MapScreen> {
   bool _isInitialized = false;
   String? _lastFocusedLocationId;
 
+  // Degisiklikleri takip etmek icin
+  int _previousLocationCount = 0;
+  int _previousRoutePointCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -132,7 +136,27 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final locationProvider = context.watch<LocationProvider>();
+    final routeProvider = context.watch<RouteProvider>();
     final targetLocation = locationProvider.targetLocation;
+
+    // Konum veya rota degisikliklerini kontrol et ve marker'lari guncelle
+    if (_isInitialized && _mapController != null) {
+      final currentLocationCount = locationProvider.locations.length;
+      final currentRoutePointCount = routeProvider.currentRoutePoints.length;
+
+      if (currentLocationCount != _previousLocationCount ||
+          currentRoutePointCount != _previousRoutePointCount) {
+        _previousLocationCount = currentLocationCount;
+        _previousRoutePointCount = currentRoutePointCount;
+
+        // Marker'lari ve route'u guncelle
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _updateMarkersAndRoute();
+          }
+        });
+      }
+    }
 
     if (targetLocation != null &&
         targetLocation.id != _lastFocusedLocationId &&
