@@ -5,6 +5,7 @@ import 'map/map_screen.dart';
 import 'routes/routes_screen.dart';
 import '../providers/theme_provider.dart';
 import '../providers/location_provider.dart';
+import '../providers/routes_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,11 +29,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final locationProvider = context.watch<LocationProvider>();
+    final routesProvider = context.watch<RoutesProvider>();
 
+    // Konum haritada gosterilecekse
     if (locationProvider.shouldNavigateToMap) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() => _currentIndex = 1);
         locationProvider.consumeNavigation();
+      });
+    }
+
+    // Rota haritada gosterilecekse
+    if (routesProvider.shouldNavigateToMap) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() => _currentIndex = 1);
+        routesProvider.consumeNavigation();
       });
     }
 

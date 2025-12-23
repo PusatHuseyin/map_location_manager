@@ -57,7 +57,10 @@ class RouteProvider with ChangeNotifier {
   Future<bool> startRouteTracking() async {
     try {
       final hasPermission = await _locationService.checkAndRequestPermissions();
-      if (!hasPermission) return false;
+      if (!hasPermission) {
+        debugPrint('❌ RouteProvider: Konum izni alinamadi');
+        return false;
+      }
 
       final routeId = _uuid.v4();
       _activeRoute = RouteModel(
@@ -71,13 +74,42 @@ class RouteProvider with ChangeNotifier {
       _currentRoutePoints = [];
       _elapsedSeconds = 0;
 
-      await _locationService.startLocationTracking();
+      debugPrint('✅ RouteProvider: Rota baslatildi - ID: ${_activeRoute!.id}');
 
-      _positionSubscription = _locationService.positionStream.listen((
-        position,
-      ) {
-        _addRoutePoint(position);
-      });
+      // Ilk pozisyonu hemen al ve kaydet
+      final initialPosition = await _locationService.getCurrentPosition();
+      if (initialPosition != null) {
+        debugPrint('📍 Baslangic pozisyonu alindi');
+        _addRoutePoint(initialPosition);
+      } else {
+        debugPrint('❌ Baslangic pozisyonu alinamadi!');
+      }
+
+      // ÖNCE stream'e subscribe ol, SONRA tracking'i başlat
+      debugPrint('🔵 RouteProvider: Stream listener oluşturuluyor...');
+
+      // Stream subscription oluştur
+      _positionSubscription = _locationService.positionStream.listen(
+        (position) {
+          debugPrint(
+            '📍 GPS Stream: (${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}) accuracy=${position.accuracy.toStringAsFixed(1)}m',
+          );
+          _addRoutePoint(position);
+        },
+        onError: (error) {
+          debugPrint('❌ GPS Stream Hatasi: $error');
+        },
+        onDone: () {
+          debugPrint('⚠️ GPS Stream kapandi');
+        },
+        cancelOnError: false,
+      );
+
+      debugPrint('✅ RouteProvider: Stream listener hazir');
+
+      // Stream'i baslat (artık dinleyici hazır)
+      await _locationService.startLocationTracking();
+      debugPrint('✅ RouteProvider: LocationService tracking baslatildi');
 
       _durationTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         _elapsedSeconds++;
@@ -87,12 +119,16 @@ class RouteProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
+      debugPrint('❌ RouteProvider: Hata - $e');
       return false;
     }
   }
 
   void _addRoutePoint(Position position) {
-    if (_activeRoute == null) return;
+    if (_activeRoute == null) {
+      debugPrint('⚠️ addRoutePoint: activeRoute null!');
+      return;
+    }
 
     final point = RoutePointModel(
       id: _uuid.v4(),
@@ -106,6 +142,9 @@ class RouteProvider with ChangeNotifier {
 
     _currentRoutePoints.add(point);
     _databaseService.insertRoutePoint(point);
+    debugPrint(
+      '💾 Nokta kaydedildi: Toplam ${_currentRoutePoints.length} nokta, Mesafe: $formattedCurrentDistance',
+    );
     notifyListeners();
   }
 
@@ -169,7 +208,7 @@ class RouteProvider with ChangeNotifier {
   }
 
   String get formattedCurrentDistance {
-    if (currentDistance >= 1000) {
+    if (currentDistance > 999) {
       return '${(currentDistance / 1000).toStringAsFixed(2)} km';
     }
     return '${currentDistance.toStringAsFixed(0)} m';

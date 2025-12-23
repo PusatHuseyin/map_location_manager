@@ -131,7 +131,7 @@ class _RouteCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () => _navigateToDetail(context),
+        onTap: () => _showOnMap(context),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -173,6 +173,12 @@ class _RouteCard extends StatelessWidget {
                     ),
                   ),
                   IconButton(
+                    tooltip: 'Detaylari Gor',
+                    icon: const Icon(Icons.info_outline, color: AppTheme.primaryColor),
+                    onPressed: () => _navigateToDetail(context),
+                  ),
+                  IconButton(
+                    tooltip: 'Sil',
                     icon: const Icon(Icons.delete, color: AppTheme.error),
                     onPressed: () => _confirmDelete(context),
                   ),
@@ -206,6 +212,11 @@ class _RouteCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showOnMap(BuildContext context) {
+    // Haritada gosterilecek rota olarak ayarla
+    context.read<RoutesProvider>().setTargetRoute(route);
   }
 
   void _navigateToDetail(BuildContext context) {

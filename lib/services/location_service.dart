@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,8 +11,8 @@ class LocationService {
   StreamSubscription<Position>? _positionStreamSubscription;
   final StreamController<Position> _positionController =
       StreamController<Position>.broadcast();
-
   Stream<Position> get positionStream => _positionController.stream;
+
   Position? _lastPosition;
   Position? get lastPosition => _lastPosition;
 
@@ -60,26 +61,47 @@ class LocationService {
   Future<bool> startLocationTracking() async {
     try {
       final hasPermission = await checkAndRequestPermissions();
-      if (!hasPermission) return false;
+      if (!hasPermission) {
+        debugPrint('❌ LocationService: İzin yok!');
+        return false;
+      }
 
       await stopLocationTracking();
+      debugPrint('🔵 LocationService: Position stream başlatılıyor...');
 
+      // Maksimum hassasiyet - her 1 metrede guncelleme
       const locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 5,
-        timeLimit: Duration(seconds: 5),
+        accuracy: LocationAccuracy.bestForNavigation, // En yuksek hassasiyet
+        distanceFilter: 1, // 1 metre hareket = guncelleme
+        timeLimit: Duration(seconds: 1), // 1 saniyede bir kontrol
       );
+
+      // StreamController zaten constructor'da/field'da initialize edildi
 
       _positionStreamSubscription =
           Geolocator.getPositionStream(
             locationSettings: locationSettings,
-          ).listen((Position position) {
-            _lastPosition = position;
-            _positionController.add(position);
-          }, onError: (error) {});
+          ).listen(
+            (Position position) {
+              debugPrint(
+                '🟢 LocationService: Pozisyon alındı - (${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}) accuracy=${position.accuracy}m',
+              );
+              _lastPosition = position;
+              _positionController.add(position);
+            },
+            onError: (error) {
+              debugPrint('🔴 LocationService: Stream hatası - $error');
+            },
+            onDone: () {
+              debugPrint('⚪ LocationService: Stream tamamlandı');
+            },
+            cancelOnError: false,
+          );
 
+      debugPrint('✅ LocationService: Position stream başlatıldı');
       return true;
     } catch (e) {
+      debugPrint('❌ LocationService: Hata - $e');
       return false;
     }
   }
@@ -87,6 +109,8 @@ class LocationService {
   Future<void> stopLocationTracking() async {
     await _positionStreamSubscription?.cancel();
     _positionStreamSubscription = null;
+
+    debugPrint('🔴 LocationService: Tracking durduruldu (Stream açık kaldı)');
   }
 
   double calculateDistance(

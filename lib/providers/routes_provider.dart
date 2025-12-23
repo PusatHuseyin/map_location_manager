@@ -10,10 +10,16 @@ class RoutesProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
 
+  // Haritada gosterilecek hedef rota
+  RouteModel? _targetRoute;
+  bool _shouldNavigateToMap = false;
+
   List<RouteModel> get routes => _routes;
   RouteModel? get selectedRoute => _selectedRoute;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  RouteModel? get targetRoute => _targetRoute;
+  bool get shouldNavigateToMap => _shouldNavigateToMap;
 
   RoutesProvider() {
     loadRoutes();
@@ -72,6 +78,25 @@ class RoutesProvider with ChangeNotifier {
 
   void clearError() {
     _error = null;
+    notifyListeners();
+  }
+
+  // Haritada gosterilecek rota olarak ayarla
+  void setTargetRoute(RouteModel route) {
+    _targetRoute = route;
+    _shouldNavigateToMap = true;
+    notifyListeners();
+  }
+
+  // Hedef rotayi temizle
+  void clearTargetRoute() {
+    _targetRoute = null;
+    notifyListeners();
+  }
+
+  // Navigasyon flag'ini temizle
+  void consumeNavigation() {
+    _shouldNavigateToMap = false;
     notifyListeners();
   }
 }

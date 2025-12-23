@@ -85,7 +85,7 @@ class RouteModel {
 
   String get formattedDistance {
     if (totalDistance == null) return '0 m';
-    if (totalDistance! >= 1000) {
+    if (totalDistance! > 999) {
       return '${(totalDistance! / 1000).toStringAsFixed(2)} km';
     }
     return '${totalDistance!.toStringAsFixed(0)} m';

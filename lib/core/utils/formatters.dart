@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class Formatters {
   static String distance(double meters) {
-    if (meters >= 1000) {
+    if (meters > 999) {
       return '${(meters / 1000).toStringAsFixed(2)} km';
     }
     return '${meters.toStringAsFixed(0)} m';
@@ -39,7 +39,7 @@ class Formatters {
   // Convert m/s to km/h
   static String speed(double metersPerSecond) {
     final kmh = metersPerSecond * 3.6;
-    return '${kmh.toStringAsFixed(1)} km/s';
+    return '${kmh.toStringAsFixed(1)} km/h';
   }
 
   static String date(DateTime dateTime) {
