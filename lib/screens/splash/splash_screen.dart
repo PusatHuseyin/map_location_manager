@@ -22,9 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<Offset> _slideAnimation;
   late Animation<double> _rotateAnimation;
 
-  String _statusMessage = 'Baslatiliyor...';
   double _progress = 0.0;
-  bool _hasError = false;
 
   @override
   void initState() {
@@ -70,12 +68,12 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _initializeApp() async {
     try {
       // Database baslat
-      await _updateStatus('Veritabani hazirlaniyor...', 0.2);
+      await _updateProgress(0.2);
       await Future.delayed(const Duration(milliseconds: 600));
       await DatabaseService().database;
 
       // Step 2: Konum izinlerini kontrol et
-      await _updateStatus('Konum izinleri kontrol ediliyor...', 0.4);
+      await _updateProgress(0.4);
       await Future.delayed(const Duration(milliseconds: 600));
 
       if (mounted) {
@@ -83,23 +81,15 @@ class _SplashScreenState extends State<SplashScreen>
         final hasPermission = await locationProvider.checkPermissions();
 
         if (!hasPermission) {
-          await _updateStatus('Konum izni bekleniyor...', 0.5);
+          await _updateProgress(0.5);
           await Future.delayed(const Duration(milliseconds: 600));
 
-          final permissionGranted = await locationProvider.checkPermissions();
-
-          if (!permissionGranted) {
-            setState(() {
-              _statusMessage = 'Konum izni gerekli';
-              _hasError = true;
-            });
-            await Future.delayed(const Duration(seconds: 2));
-          }
+          await locationProvider.checkPermissions();
         }
       }
 
       // Step 3: Verileri yukle
-      await _updateStatus('Veriler yukleniyor...', 0.7);
+      await _updateProgress(0.7);
       await Future.delayed(const Duration(milliseconds: 600));
 
       if (mounted) {
@@ -110,7 +100,6 @@ class _SplashScreenState extends State<SplashScreen>
         await routesProvider.loadRoutes();
       }
 
-      await _updateStatus('Tamamlandı!', 1.0);
       await Future.delayed(const Duration(milliseconds: 500));
 
       if (mounted) {
@@ -140,14 +129,6 @@ class _SplashScreenState extends State<SplashScreen>
         );
       }
     } catch (e) {
-      setState(() {
-        _statusMessage = 'Bir hata olustu';
-        _hasError = true;
-        _progress = 0.0;
-      });
-
-      await Future.delayed(const Duration(seconds: 2));
-
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -156,10 +137,9 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  Future<void> _updateStatus(String message, double progress) async {
+  Future<void> _updateProgress(double progress) async {
     if (mounted) {
       setState(() {
-        _statusMessage = message;
         _progress = progress;
       });
     }
@@ -176,7 +156,12 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(
+        0xFFFFC927,
+      ), // Ensure no white background shows
       body: Container(
+        width: double.infinity, // Force full width
+        height: double.infinity, // Force full height
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -274,8 +259,6 @@ class _SplashScreenState extends State<SplashScreen>
                             ],
                           ),
                         ),
-
-                        const SizedBox(height: 12),
                       ],
                     ),
                   ),
@@ -290,11 +273,13 @@ class _SplashScreenState extends State<SplashScreen>
                     children: [
                       // Progress Bar
                       Container(
+                        width: double.infinity, // Fixed width track
                         height: 6,
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(10),
                         ),
+                        alignment: Alignment.centerLeft,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: AnimatedContainer(
@@ -302,70 +287,15 @@ class _SplashScreenState extends State<SplashScreen>
                             curve: Curves.easeInOut,
                             width:
                                 MediaQuery.of(context).size.width *
-                                0.8 *
+                                0.8 * // Match padding logic effectively
                                 _progress,
+                            height: 6,
                             decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [Colors.white, Color(0xFFE3F2FD)],
                               ),
                             ),
                           ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Status Section
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (!_hasError)
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white.withValues(alpha: 0.9),
-                                ),
-                              ),
-                            )
-                          else
-                            const Icon(
-                              Icons.error_outline_rounded,
-                              size: 24,
-                              color: Colors.white,
-                            ),
-                          const SizedBox(width: 16),
-                          Flexible(
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: Text(
-                                _statusMessage,
-                                key: ValueKey<String>(_statusMessage),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.5,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Progress Percentage
-                      Text(
-                        '${(_progress * 100).toInt()}%',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withValues(alpha: 0.7),
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.0,
                         ),
                       ),
                     ],
