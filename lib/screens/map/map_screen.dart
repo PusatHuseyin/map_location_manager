@@ -9,6 +9,7 @@ import '../../providers/location_provider.dart';
 import '../../providers/route_provider.dart';
 import '../../models/location_model.dart';
 import '../../widgets/add_location_from_map_dialog.dart'; // Actually BottomSheet
+import '../../core/utils/map_styles.dart';
 import '../routes/route_name_dialog.dart';
 
 class MapScreen extends StatefulWidget {
@@ -145,11 +146,14 @@ class _MapScreenState extends State<MapScreen> {
       );
     }
 
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return GoogleMap(
       initialCameraPosition: const CameraPosition(
         target: AppConstants.konyaLocation,
         zoom: AppConstants.defaultZoom,
       ),
+      style: isDarkMode ? MapStyles.darkStyle : null,
       onMapCreated: (controller) {
         _mapController = controller;
         _updateMarkersAndRoute();
