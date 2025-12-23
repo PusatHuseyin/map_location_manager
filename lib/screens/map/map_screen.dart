@@ -133,7 +133,7 @@ class _MapScreenState extends State<MapScreen> {
       Polyline(
         polylineId: const PolylineId('active_route_shadow'),
         points: points,
-        color: const Color(0xFF1565C0), // Dark Blue
+        color: AppTheme.primaryDark.withValues(alpha: 0.7), // Shadow
         width: 10,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
@@ -147,7 +147,7 @@ class _MapScreenState extends State<MapScreen> {
       Polyline(
         polylineId: const PolylineId('active_route_main'),
         points: points,
-        color: const Color(0xFF4285F4), // Google Maps Blue
+        color: AppTheme.primaryColor, // Theme Color
         width: 7,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
@@ -166,10 +166,7 @@ class _MapScreenState extends State<MapScreen> {
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         jointType: JointType.round,
-        patterns: [
-          PatternItem.dash(15),
-          PatternItem.gap(10),
-        ],
+        patterns: [PatternItem.dash(15), PatternItem.gap(10)],
         zIndex: 3,
       ),
     );
@@ -438,15 +435,16 @@ class _MapScreenState extends State<MapScreen> {
       _markers.clear();
       _polylines.clear();
 
-      final points =
-          route.points.map((p) => LatLng(p.latitude, p.longitude)).toList();
+      final points = route.points
+          .map((p) => LatLng(p.latitude, p.longitude))
+          .toList();
 
       // 1. Alt tabaka - Kalin shadow/border (koyu mavi)
       _polylines.add(
         Polyline(
           polylineId: PolylineId('${route.id}_shadow'),
           points: points,
-          color: const Color(0xFF1A237E), // Deep Blue Shadow
+          color: AppTheme.primaryDark.withValues(alpha: 0.8), // Shadow
           width: 12,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
@@ -460,7 +458,7 @@ class _MapScreenState extends State<MapScreen> {
         Polyline(
           polylineId: PolylineId('${route.id}_main'),
           points: points,
-          color: const Color(0xFF4285F4), // Google Maps Blue
+          color: AppTheme.primaryColor, // Theme Color
           width: 8,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
@@ -479,10 +477,7 @@ class _MapScreenState extends State<MapScreen> {
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
           jointType: JointType.round,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(15),
-          ],
+          patterns: [PatternItem.dash(20), PatternItem.gap(15)],
           zIndex: 3,
         ),
       );
@@ -492,7 +487,9 @@ class _MapScreenState extends State<MapScreen> {
         Marker(
           markerId: MarkerId('${route.id}_start'),
           position: points.first,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
           infoWindow: InfoWindow(
             title: '🚩 Başlangıç',
             snippet:
@@ -595,8 +592,9 @@ class _MapScreenState extends State<MapScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
               ),
               child: Row(
                 children: [
@@ -608,9 +606,7 @@ class _MapScreenState extends State<MapScreen> {
                       children: [
                         Text(
                           targetRoute.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -621,10 +617,10 @@ class _MapScreenState extends State<MapScreen> {
                         const SizedBox(height: 4),
                         Text(
                           dateFormat.format(targetRoute.startTime),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                  ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Colors.white.withValues(alpha: 0.9),
+                              ),
                         ),
                       ],
                     ),
@@ -751,17 +747,17 @@ class _RouteStatItem extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
+            color: AppTheme.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
         ),
       ],
     );
