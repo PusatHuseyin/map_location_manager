@@ -175,7 +175,7 @@ class _SplashScreenState extends State<SplashScreen>
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 const Spacer(flex: 2),
@@ -224,7 +224,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                         // App Name with Style
                         const Text(
-                          'MAP LOCATION',
+                          'HARİTA & KONUM',
                           style: TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.w900,
@@ -244,7 +244,7 @@ class _SplashScreenState extends State<SplashScreen>
                         const SizedBox(height: 8),
 
                         const Text(
-                          'MANAGER',
+                          'YÖNETİMİ',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w300,

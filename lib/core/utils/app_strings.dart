@@ -1,7 +1,7 @@
 // Centralized string constants
 class AppStrings {
   // App Info
-  static const String appName = 'Map Location Manager';
+  static const String appName = 'Harita & Konum Yönetimi';
   static const String appVersion = '1.0.0';
 
   // General

@@ -87,55 +87,51 @@ class _AddLocationFromMapBottomSheetState
           ),
           const Divider(height: 1),
           // Form
-          Padding(
-            padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.locationName,
-                      hintText: AppStrings.locationNameHint,
-                      prefixIcon: const Icon(Icons.label),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: AppStrings.locationName,
+                        hintText: AppStrings.locationNameHint,
+                        prefixIcon: const Icon(Icons.label),
+                      ),
+                      autofocus: true,
+                      validator: (value) =>
+                          Validators.required(value, AppStrings.locationName),
                     ),
-                    autofocus: true,
-                    validator: (value) =>
-                        Validators.required(value, AppStrings.locationName),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: '${AppStrings.description} (Opsiyonel)',
-                      hintText: AppStrings.descriptionHint,
-                      prefixIcon: const Icon(Icons.description),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(
+                        labelText: '${AppStrings.description} (Opsiyonel)',
+                        hintText: AppStrings.descriptionHint,
+                        prefixIcon: const Icon(Icons.description),
+                      ),
+                      maxLines: 2,
                     ),
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _saveLocation,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: _isLoading ? null : _saveLocation,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(AppStrings.save),
                     ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(AppStrings.save),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

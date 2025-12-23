@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:label="map_location_manager"
+        android:label="Harita &amp; Konum Yönetimi"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

@@ -24,8 +24,11 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
         actions: [
           TextButton.icon(
             onPressed: () => Navigator.pop(context, _selectedPosition),
-            icon: const Icon(Icons.check, color: AppTheme.success),
-            label: const Text('Seç', style: TextStyle(color: AppTheme.success)),
+            icon: const Icon(Icons.check, color: AppTheme.primaryDark),
+            label: const Text(
+              'Seç',
+              style: TextStyle(color: AppTheme.primaryDark),
+            ),
           ),
         ],
       ),

@@ -74,98 +74,100 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
           ),
           const Divider(height: 1),
           // Form
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.locationName,
-                      hintText: AppStrings.locationNameHint,
-                      prefixIcon: const Icon(Icons.label),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: AppStrings.locationName,
+                        hintText: AppStrings.locationNameHint,
+                        prefixIcon: const Icon(Icons.label),
+                      ),
+                      validator: (value) =>
+                          Validators.required(value, AppStrings.locationName),
                     ),
-                    validator: (value) =>
-                        Validators.required(value, AppStrings.locationName),
-                  ),
-                  const SizedBox(height: 16),
-                  CheckboxListTile(
-                    value: _useCurrentLocation,
-                    onChanged: (value) {
-                      setState(() => _useCurrentLocation = value ?? false);
-                      if (_useCurrentLocation) _fillCurrentLocation();
-                    },
-                    title: Text(AppStrings.useCurrentLocation),
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: _useCurrentLocation ? null : _pickFromMap,
-                    icon: const Icon(Icons.map),
-                    label: const Text('Haritadan Seç'),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    const SizedBox(height: 16),
+                    CheckboxListTile(
+                      value: _useCurrentLocation,
+                      onChanged: (value) {
+                        setState(() => _useCurrentLocation = value ?? false);
+                        if (_useCurrentLocation) _fillCurrentLocation();
+                      },
+                      title: Text(AppStrings.useCurrentLocation),
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _latitudeController,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.latitude,
-                      hintText: '37.8746',
-                      prefixIcon: const Icon(Icons.location_on),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: _useCurrentLocation ? null : _pickFromMap,
+                      icon: const Icon(Icons.map),
+                      label: const Text('Haritadan Seç'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                      signed: true,
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _latitudeController,
+                      decoration: InputDecoration(
+                        labelText: AppStrings.latitude,
+                        hintText: '37.8746',
+                        prefixIcon: const Icon(Icons.location_on),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: true,
+                      ),
+                      enabled: !_useCurrentLocation,
+                      validator: Validators.latitude,
                     ),
-                    enabled: !_useCurrentLocation,
-                    validator: Validators.latitude,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _longitudeController,
-                    decoration: InputDecoration(
-                      labelText: AppStrings.longitude,
-                      hintText: '32.4932',
-                      prefixIcon: const Icon(Icons.location_on),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _longitudeController,
+                      decoration: InputDecoration(
+                        labelText: AppStrings.longitude,
+                        hintText: '32.4932',
+                        prefixIcon: const Icon(Icons.location_on),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: true,
+                      ),
+                      enabled: !_useCurrentLocation,
+                      validator: Validators.longitude,
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                      signed: true,
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(
+                        labelText: '${AppStrings.description} (Opsiyonel)',
+                        hintText: AppStrings.descriptionHint,
+                        prefixIcon: const Icon(Icons.description),
+                      ),
+                      maxLines: 3,
                     ),
-                    enabled: !_useCurrentLocation,
-                    validator: Validators.longitude,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: '${AppStrings.description} (Opsiyonel)',
-                      hintText: AppStrings.descriptionHint,
-                      prefixIcon: const Icon(Icons.description),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: _isLoading ? null : _saveLocation,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(AppStrings.save),
                     ),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _saveLocation,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(AppStrings.save),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
