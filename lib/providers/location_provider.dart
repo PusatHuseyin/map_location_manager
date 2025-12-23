@@ -27,8 +27,6 @@ class LocationProvider with ChangeNotifier {
 
   Future<void> _init() async {
     await loadLocations();
-    await updateCurrentPosition();
-    _startLocationTracking();
   }
 
   // Tum konumlari yukle
@@ -128,7 +126,7 @@ class LocationProvider with ChangeNotifier {
   }
 
   // Canli konum takibini baslatma
-  void _startLocationTracking() {
+  void startLocationTracking() {
     _locationService.positionStream.listen((position) {
       _currentPosition = position;
       notifyListeners();

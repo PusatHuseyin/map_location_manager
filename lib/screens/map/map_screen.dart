@@ -32,11 +32,20 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _initializeLocation() async {
     final locationProvider = context.read<LocationProvider>();
+    // Check permission and update position
     final hasPermission = await locationProvider.checkPermissions();
 
-    if (hasPermission && mounted) {
-      setState(() => _isInitialized = true);
-      _updateMarkersAndRoute();
+    if (mounted) {
+      if (hasPermission) {
+        setState(() => _isInitialized = true);
+        _updateMarkersAndRoute();
+        // Start tracking if permission granted
+        locationProvider.updateCurrentPosition();
+        locationProvider.startLocationTracking();
+      } else {
+        // If permission denied, ensure we show retry UI
+        setState(() => _isInitialized = false);
+      }
     }
   }
 
@@ -116,13 +125,21 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _buildMap() {
     if (!_isInitialized) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Konum izinleri kontrol ediliyor...'),
+            const Icon(Icons.location_off, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
+            const Text(
+              'Haritayı kullanmak için\nkonum izni gereklidir.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _initializeLocation,
+              child: const Text('İzin Ver ve Tekrar Dene'),
+            ),
           ],
         ),
       );

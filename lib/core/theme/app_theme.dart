@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Modern renk paleti
-  static const Color primaryColor = Color(0xFF2196F3);
-  static const Color primaryDark = Color(0xFF1976D2);
+  static const Color primaryColor = Color(0xFFFFC927);
+  static const Color primaryDark = Color(0xFFFFB300);
   static const Color accent = Color(0xFF00BCD4);
   static const Color background = Color(0xFFF5F5F5);
   static const Color surface = Colors.white;

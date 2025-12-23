@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../providers/location_provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_strings.dart';
 import '../../core/utils/validators.dart';
+import '../../widgets/map_location_picker.dart';
 
 // BottomSheet for adding new location
 class AddLocationBottomSheet extends StatefulWidget {
@@ -101,6 +103,15 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
                   const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: _useCurrentLocation ? null : _pickFromMap,
+                    icon: const Icon(Icons.map),
+                    label: const Text('Haritadan Seç'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _latitudeController,
                     decoration: InputDecoration(
@@ -186,6 +197,18 @@ class _AddLocationBottomSheetState extends State<AddLocationBottomSheet> {
     }
 
     setState(() => _isLoading = false);
+  }
+
+  Future<void> _pickFromMap() async {
+    final result = await Navigator.push<LatLng>(
+      context,
+      MaterialPageRoute(builder: (context) => const MapLocationPicker()),
+    );
+
+    if (result != null) {
+      _latitudeController.text = result.latitude.toStringAsFixed(6);
+      _longitudeController.text = result.longitude.toStringAsFixed(6);
+    }
   }
 
   Future<void> _saveLocation() async {

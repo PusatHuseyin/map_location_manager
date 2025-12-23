@@ -82,13 +82,13 @@ class LocationsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Henuz konum eklenmemis',
+                          'Henüz konum eklenmemiş',
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(color: AppTheme.textSecondary),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Yeni konum eklemek icin + butonuna basin',
+                          '(+) Butonu ile yeni konum ekleyebilirsiniz',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],

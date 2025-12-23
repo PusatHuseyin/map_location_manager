@@ -82,13 +82,13 @@ class RoutesScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Henuz kaydedilmis rota yok',
+                          'Henüz kaydedilmiş rota yok!',
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(color: AppTheme.textSecondary),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Harita ekranindan rota kaydi baslatabilirsiniz',
+                          'Harita ekranindan rota kaydı başlatabilirsiniz.',
                           style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
