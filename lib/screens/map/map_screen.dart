@@ -32,7 +32,6 @@ class _MapScreenState extends State<MapScreen> {
   String? _lastFocusedLocationId;
   String? _lastFocusedRouteId;
 
-  // Degisiklikleri takip etmek icin
   int _previousLocationCount = 0;
   int _previousRoutePointCount = 0;
 
@@ -122,18 +121,16 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  // Aktif rota icin Google Maps tarzi profesyonel polyline ekle
   void _addActiveRoutePolylines(RouteProvider provider) {
     final points = provider.currentRoutePoints
         .map((p) => LatLng(p.latitude, p.longitude))
         .toList();
 
-    // 1. Alt tabaka - Shadow (koyu renk)
     _polylines.add(
       Polyline(
         polylineId: const PolylineId('active_route_shadow'),
         points: points,
-        color: AppTheme.primaryDark.withValues(alpha: 0.4), // Shadow
+        color: AppTheme.primaryDark.withValues(alpha: 0.4),
         width: 5,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
@@ -142,12 +139,11 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
 
-    // 2. Ana tabaka - Parlak mavi yol
     _polylines.add(
       Polyline(
         polylineId: const PolylineId('active_route_main'),
         points: points,
-        color: AppTheme.primaryColor, // Theme Color
+        color: AppTheme.primaryColor,
         width: 3,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
@@ -165,7 +161,6 @@ class _MapScreenState extends State<MapScreen> {
     final targetLocation = locationProvider.targetLocation;
     final targetRoute = routesProvider.targetRoute;
 
-    // Konum veya rota degisikliklerini kontrol et ve marker'lari guncelle
     if (_isInitialized && _mapController != null) {
       final currentLocationCount = locationProvider.locations.length;
       final currentRoutePointCount = routeProvider.currentRoutePoints.length;
@@ -175,7 +170,6 @@ class _MapScreenState extends State<MapScreen> {
         _previousLocationCount = currentLocationCount;
         _previousRoutePointCount = currentRoutePointCount;
 
-        // Marker'lari ve route'u guncelle
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _updateMarkersAndRoute();
@@ -184,7 +178,6 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
 
-    // Hedef konum varsa haritada goster
     if (targetLocation != null &&
         targetLocation.id != _lastFocusedLocationId &&
         _mapController != null &&
@@ -201,7 +194,6 @@ class _MapScreenState extends State<MapScreen> {
       });
     }
 
-    // Hedef rota varsa haritada goster
     if (targetRoute != null &&
         targetRoute.id != _lastFocusedRouteId &&
         _mapController != null &&
@@ -403,18 +395,8 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  // Hedef rotayi haritada profesyonel sekilde goster (Google Maps tarzi)
   void _showTargetRouteOnMap(RouteModel route) {
-    debugPrint(
-      '🗺️ MapScreen: Target route gösteriliyor - ${route.name}, ${route.points.length} nokta, ${route.formattedDistance}',
-    );
-
-    if (route.points.isEmpty) {
-      debugPrint('❌ MapScreen: Route points BOŞ! Çizgi çizilemez.');
-      return;
-    }
-
-    debugPrint('✅ MapScreen: Route çiziliyor...');
+    if (route.points.isEmpty) return;
 
     setState(() {
       _markers.clear();
@@ -424,12 +406,11 @@ class _MapScreenState extends State<MapScreen> {
           .map((p) => LatLng(p.latitude, p.longitude))
           .toList();
 
-      // 1. Alt tabaka - Kalin shadow/border (koyu mavi)
       _polylines.add(
         Polyline(
           polylineId: PolylineId('${route.id}_shadow'),
           points: points,
-          color: AppTheme.primaryDark.withValues(alpha: 0.4), // Shadow
+          color: AppTheme.primaryDark.withValues(alpha: 0.4),
           width: 6,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
@@ -438,12 +419,11 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
 
-      // 2. Ana tabaka - Google Maps mavi yol
       _polylines.add(
         Polyline(
           polylineId: PolylineId('${route.id}_main'),
           points: points,
-          color: AppTheme.primaryColor, // Theme Color
+          color: AppTheme.primaryColor,
           width: 4,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
@@ -452,7 +432,6 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
 
-      // 4. Baslangic marker (Buyuk yesil)
       _markers.add(
         Marker(
           markerId: MarkerId('${route.id}_start'),
@@ -468,7 +447,6 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
 
-      // 5. Bitis marker (Buyuk kirmizi)
       _markers.add(
         Marker(
           markerId: MarkerId('${route.id}_end'),
@@ -483,10 +461,8 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
 
-      // 6. Ara noktalar - Her 15-20 noktada bir kucuk mor marker
       if (points.length > 30) {
-        // Sadece uzun rotalarda goster
-        final interval = (points.length / 5).ceil(); // ~5 ara nokta
+        final interval = (points.length / 5).ceil();
         for (int i = interval; i < points.length - interval; i += interval) {
           _markers.add(
             Marker(
@@ -507,11 +483,9 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
 
-    // Kamerayi rotanin tamamini gorecek sekilde ayarla
     _fitRouteBounds(route);
   }
 
-  // Rota bounds'una gore kamera ayarla
   void _fitRouteBounds(RouteModel route) async {
     if (route.points.isEmpty || _mapController == null) return;
 
@@ -538,7 +512,6 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  // Hedef rota bilgi karti
   Widget _buildTargetRouteInfo() {
     final routesProvider = context.watch<RoutesProvider>();
     final targetRoute = routesProvider.targetRoute;
@@ -557,7 +530,6 @@ class _MapScreenState extends State<MapScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Baslik
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -599,20 +571,17 @@ class _MapScreenState extends State<MapScreen> {
                     icon: const Icon(Icons.close, color: Colors.white),
                     onPressed: () {
                       routesProvider.clearTargetRoute();
-                      // Marker'lari ve polyline'lari temizle
                       setState(() {
                         _markers.clear();
                         _polylines.clear();
                         _lastFocusedRouteId = null;
                       });
-                      // Normal marker'lari geri yukle
                       _updateMarkersAndRoute();
                     },
                   ),
                 ],
               ),
             ),
-            // Istatistikler
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -687,7 +656,6 @@ class _InfoItem extends StatelessWidget {
   }
 }
 
-// Rota istatistik widget'i
 class _RouteStatItem extends StatelessWidget {
   final IconData icon;
   final String label;

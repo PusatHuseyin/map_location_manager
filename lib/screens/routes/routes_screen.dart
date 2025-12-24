@@ -174,7 +174,10 @@ class _RouteCard extends StatelessWidget {
                   ),
                   IconButton(
                     tooltip: 'Detaylari Gor',
-                    icon: const Icon(Icons.info_outline, color: AppTheme.primaryColor),
+                    icon: const Icon(
+                      Icons.info_outline,
+                      color: AppTheme.primaryColor,
+                    ),
                     onPressed: () => _navigateToDetail(context),
                   ),
                   IconButton(
@@ -215,7 +218,7 @@ class _RouteCard extends StatelessWidget {
   }
 
   void _showOnMap(BuildContext context) {
-    // Haritada gosterilecek rota olarak ayarla
+    // Haritada gosterilecek rota olarak ayarlamA
     context.read<RoutesProvider>().setTargetRoute(route);
   }
 

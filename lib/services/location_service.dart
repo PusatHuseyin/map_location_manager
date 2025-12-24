@@ -69,20 +69,19 @@ class LocationService {
       await stopLocationTracking();
       debugPrint('🔵 LocationService: Position stream başlatılıyor...');
 
-      // Platforma ozel gelismis ayarlar
       late LocationSettings locationSettings;
 
       if (defaultTargetPlatform == TargetPlatform.android) {
         locationSettings = AndroidSettings(
-          accuracy: LocationAccuracy.best, // bestForNavigation bazı cihazlarda throttle edilir
-          distanceFilter: 0, // Her harekette güncelle
-          forceLocationManager: true, // Fused Location yerine LocationManager kullan (daha agresif)
-          intervalDuration: const Duration(milliseconds: 500), // 0.5 saniyede bir (daha hızlı)
-          // Arka plan icin onemli
+          accuracy: LocationAccuracy.best,
+          distanceFilter: 0,
+          forceLocationManager: true,
+          intervalDuration: const Duration(milliseconds: 500),
           foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText: "Konum takibi devam ediyor - Her adımınız kaydediliyor",
+            notificationText:
+                "Konum takibi devam ediyor - Her adımınız kaydediliyor",
             notificationTitle: "🗺️ Rota Kaydı Aktif",
-            enableWakeLock: true, // Cihazın uyumasını engelle
+            enableWakeLock: true,
             notificationIcon: AndroidResource(name: 'ic_launcher'),
           ),
         );
@@ -90,7 +89,7 @@ class LocationService {
           defaultTargetPlatform == TargetPlatform.macOS) {
         locationSettings = AppleSettings(
           accuracy: LocationAccuracy.best,
-          activityType: ActivityType.fitness, // Yürüyüş/koşu için optimize
+          activityType: ActivityType.fitness, // Yürüyüş, koşu için optimize
           distanceFilter: 0,
           pauseLocationUpdatesAutomatically: false,
           showBackgroundLocationIndicator: true,
@@ -101,8 +100,6 @@ class LocationService {
           distanceFilter: 0,
         );
       }
-
-      // StreamController zaten constructor'da/field'da initialize edildi
 
       _positionStreamSubscription =
           Geolocator.getPositionStream(
@@ -148,7 +145,7 @@ class LocationService {
     return Geolocator.distanceBetween(startLat, startLng, endLat, endLng);
   }
 
-  // birden fazla nokta arasindaki toplam mesafeyi hesapla
+  // birden fazla nokta arasindaki toplam mesafeyi hesaplama
 
   double calculateTotalDistance(List<Position> positions) {
     if (positions.length < 2) return 0.0;

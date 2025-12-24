@@ -33,29 +33,27 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
         .toList();
 
     setState(() {
-      // 1. Kenar cizgisi (Dis hat - Border)
       _polylines.add(
         Polyline(
           polylineId: PolylineId('${widget.route.id}_border'),
           points: points,
-          color: const Color(0xFF1A237E), // Deep Blue Border
-          width: 8, // Daha genis
+          color: const Color(0xFF1A237E),
+          width: 8,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
-          zIndex: 1, // Altta kalsin
+          zIndex: 1,
         ),
       );
 
-      // 2. Ana cizgi (Ic hat - Core)
       _polylines.add(
         Polyline(
           polylineId: PolylineId(widget.route.id),
           points: points,
-          color: const Color(0xFF448AFF), // Bright Blue
-          width: 5, // Biraz daha ince
+          color: const Color(0xFF448AFF),
+          width: 5,
           startCap: Cap.roundCap,
           endCap: Cap.roundCap,
-          zIndex: 2, // Ustte olsun
+          zIndex: 2,
           patterns: [PatternItem.dash(30), PatternItem.gap(20)],
         ),
       );

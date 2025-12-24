@@ -1,6 +1,6 @@
 // merkezi string sabitleri
 class AppStrings {
-  // App infos
+  // app infos
   static const String appName = 'Harita & Konum Yönetimi';
 
   // general
@@ -51,7 +51,7 @@ class AppStrings {
   static const String currentLocationError =
       'Mevcut konum alınamadı. İzinleri kontrol edin.';
 
-  // Validation
+  // validation
   static const String nameRequired = 'Konum adı gerekli';
   static const String latitudeRequired = 'Enlem gerekli';
   static const String longitudeRequired = 'Boylam gerekli';
@@ -60,7 +60,7 @@ class AppStrings {
   static const String invalidLongitude =
       'Geçerli bir boylam girin (-180 ile 180 arası)';
 
-  // Routes
+  // routes
   static const String startTracking = 'Başlat';
   static const String stopTracking = 'Bitir';
   static const String routeName = 'Rota Adı';
@@ -80,7 +80,7 @@ class AppStrings {
   static const String routeExported = 'Rota GPX formatında dışa aktarıldı';
   static const String routeExportError = 'Rota dışa aktarılırken hata oluştu';
 
-  // Route Stats
+  // route Stats
   static const String distance = 'Mesafe';
   static const String duration = 'Süre';
   static const String avgSpeed = 'Ort. Hız';
@@ -89,7 +89,7 @@ class AppStrings {
   static const String startTime = 'Başlangıç';
   static const String endTime = 'Bitiş';
 
-  // Map
+  // map
   static const String myLocation = 'Konumum';
   static const String addLocationOnMap = 'Haritaya Konum Ekle';
   static const String longPressToAdd = 'Konum eklemek için haritaya uzun basın';
@@ -99,7 +99,7 @@ class AppStrings {
   static const String terrain = 'Arazi';
   static const String hybrid = 'Hibrit';
 
-  // Permissions
+  // permissions
   static const String locationPermissionDenied = 'Konum izni reddedildi';
   static const String locationPermissionRequired = 'Konum izni gerekli';
   static const String locationServiceDisabled = 'Konum servisi kapalı';
@@ -121,7 +121,7 @@ class AppStrings {
   static const String version = 'Versiyon';
   static const String licenses = 'Lisanslar';
 
-  // Errors
+  // errors
   static const String errorOccurred = 'Bir hata oluştu';
   static const String tryAgain = 'Tekrar deneyin';
   static const String pullToRefresh = 'veya aşağı çekin';
