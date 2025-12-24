@@ -29,23 +29,59 @@ Görevin maddelerine uygun olarak geliştirdiğim özellikler şunlardır:
 
 Projede sürdürülebilirlik ve test edilebilirlik açısından 'Clean Architecture' prensiplerine sadık kalmaya çalıştım. Klasör yapısını katmanlara ayırdım
 
-- Providers: State management için `Provider` paketini kullandım. UI ve Business Logic'i birbirinden ayırdım.
-- Services: Veritabanı ve konum servislerini ayrı sınıflar olarak yazdım (`DatabaseService`, `LocationService`).
+- Providers: State management için 'Provider' paketini kullandım. UI ve Business Logic'i birbirinden ayırdım.
+- Services: Veritabanı ve konum servislerini ayrı sınıflar olarak yazdım ('DatabaseService', 'LocationService').
 - Models: Veri tutarlılığı için güçlü tip tanımları (LocationModel, RouteModel) kullandım.
 - Core: Uygulama genelindeki sabitleri, temaları ve yardımcı fonksiyonları burada topladım.
 
-# Kurulum Notları
+# Veritabanı Yapısı (SQLite)
 
-Projeyi çalıştırmak için standart Flutter adımlarını takip edebilirsiniz:
+Veritabanı: 'map_location_manager.db'
 
-1.  Bağımlılıkları yükleyin ardından uygulamayı çalıştırın:
-    - flutter pub get
-    - flutter run
+'locations' - Kaydedilen konumlar
+- sql
+CREATE TABLE locations (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  description TEXT,
+  created_at TEXT NOT NULL
+)
 
-Not: `AndroidManifest.xml` ve `Info.plist` dosyaları hali hazırda yapılandırılmıştır. Google Maps API Key tanımlıdir.
-Şimdilik sadece 'android' için yapılandırılmıştır.
 
-# Teslimat İçeriği
+'routes' - Kaydedilen rotalar
+- sql
+CREATE TABLE routes (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  start_time TEXT NOT NULL,
+  end_time TEXT,
+  total_distance REAL,
+  duration INTEGER
+)
 
-- Kaynak Kod: Tüm proje dosyaları.
-- APK: build/app/outputs/flutter-apk/app-release.apk dizininde release edilmiş APK dosyası mevcuttur.
+
+'route_points' - Rota GPS noktaları
+- sql
+CREATE TABLE route_points (
+  id TEXT PRIMARY KEY,
+  route_id TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  timestamp TEXT NOT NULL,
+  speed REAL,
+  accuracy REAL,
+  FOREIGN KEY (route_id) REFERENCES routes (id) ON DELETE CASCADE
+)
+CREATE INDEX idx_route_points_route_id ON route_points(route_id)
+
+
+# API Key
+
+Projede test amaçlı Google Maps API Key tanımlı: 'android/app/src/main/AndroidManifest.xml'
+
+xml
+<meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="AIzaSyCIY75THHoQNZU5J0SD3AsxovqvM2VBp7s" />
