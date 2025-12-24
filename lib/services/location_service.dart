@@ -74,28 +74,30 @@ class LocationService {
 
       if (defaultTargetPlatform == TargetPlatform.android) {
         locationSettings = AndroidSettings(
-          accuracy: LocationAccuracy.bestForNavigation,
-          distanceFilter: 0,
-          forceLocationManager: false,
-          intervalDuration: const Duration(seconds: 1), // 1 saniyede bir zorla
+          accuracy: LocationAccuracy.best, // bestForNavigation bazı cihazlarda throttle edilir
+          distanceFilter: 0, // Her harekette güncelle
+          forceLocationManager: true, // Fused Location yerine LocationManager kullan (daha agresif)
+          intervalDuration: const Duration(milliseconds: 500), // 0.5 saniyede bir (daha hızlı)
           // Arka plan icin onemli
           foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText: "Konum takibi devam ediyor",
-            notificationTitle: "Rota Kaydı Aktif",
-            enableWakeLock: true,
+            notificationText: "Konum takibi devam ediyor - Her adımınız kaydediliyor",
+            notificationTitle: "🗺️ Rota Kaydı Aktif",
+            enableWakeLock: true, // Cihazın uyumasını engelle
+            notificationIcon: AndroidResource(name: 'ic_launcher'),
           ),
         );
       } else if (defaultTargetPlatform == TargetPlatform.iOS ||
           defaultTargetPlatform == TargetPlatform.macOS) {
         locationSettings = AppleSettings(
-          accuracy: LocationAccuracy.bestForNavigation,
+          accuracy: LocationAccuracy.best,
+          activityType: ActivityType.fitness, // Yürüyüş/koşu için optimize
           distanceFilter: 0,
           pauseLocationUpdatesAutomatically: false,
           showBackgroundLocationIndicator: true,
         );
       } else {
         locationSettings = const LocationSettings(
-          accuracy: LocationAccuracy.bestForNavigation,
+          accuracy: LocationAccuracy.best,
           distanceFilter: 0,
         );
       }

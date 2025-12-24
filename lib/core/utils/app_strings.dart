@@ -1,9 +1,9 @@
-// Merkezi string sabitleri
+// merkezi string sabitleri
 class AppStrings {
   // App infos
   static const String appName = 'Harita & Konum Yönetimi';
 
-  // General
+  // general
   static const String ok = 'Tamam';
   static const String cancel = 'İptal';
   static const String save = 'Kaydet';
@@ -19,13 +19,13 @@ class AppStrings {
   static const String export = 'Dışa Aktar';
   static const String settings = 'Ayarlar';
 
-  // Navigation
+  // navigation
   static const String locations = 'Konumlar';
   static const String map = 'Harita';
   static const String routes = 'Rotalar';
   static const String analytics = 'Analitik';
 
-  // Locations
+  // locations
   static const String addLocation = 'Yeni Konum Ekle';
   static const String editLocation = 'Konumu Düzenle';
   static const String deleteLocation = 'Konumu Sil';

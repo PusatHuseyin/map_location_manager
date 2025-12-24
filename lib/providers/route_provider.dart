@@ -130,7 +130,11 @@ class RouteProvider with ChangeNotifier {
       return;
     }
 
-    // Titreşimleri engellemek için mesafe kontrolü (en az 0.8 metre hareket)
+    debugPrint(
+      '📍 GPS Pozisyon geldi: (${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}) accuracy=${position.accuracy.toStringAsFixed(1)}m',
+    );
+
+    // Titreşimleri engellemek için mesafe kontrolü (en az 0.5 metre hareket)
     if (_currentRoutePoints.isNotEmpty) {
       final lastPoint = _currentRoutePoints.last;
       final distanceSinceLastPoint = _locationService.calculateDistance(
@@ -140,14 +144,28 @@ class RouteProvider with ChangeNotifier {
         position.longitude,
       );
 
-      // Çok yakın noktaları kaydetme (GPS gürültüsünü engeller ama adımları yakalar)
-      // Ayrıca çok düşük hassasiyetli (accuracy > 15m) noktaları eliyoruz
-      if (distanceSinceLastPoint < 0.8 || position.accuracy > 15.0) {
+      debugPrint(
+        '📏 Son noktaya mesafe: ${distanceSinceLastPoint.toStringAsFixed(2)}m',
+      );
+
+      // ÇOK KÖTÜ accuracy'leri reddet (>50m = GPS kaybolmuş)
+      // Yavaş yürüyüşte 15-30m accuracy normal olabilir, çok sert filtreleme
+      if (position.accuracy > 50.0) {
         debugPrint(
-          '📍 Nokta atlandi (Mesafe: ${distanceSinceLastPoint.toStringAsFixed(2)}m, Accuracy: ${position.accuracy.toStringAsFixed(1)}m)',
+          '❌ Nokta reddedildi - Accuracy çok kötü (${position.accuracy.toStringAsFixed(1)}m > 50m)',
         );
         return;
       }
+
+      // Çok yakın noktaları kaydetme (GPS noise) - ancak yavaş yürüyüşü de yakala
+      if (distanceSinceLastPoint < 0.5) {
+        debugPrint(
+          '⏭️ Nokta atlandı - Çok yakın (${distanceSinceLastPoint.toStringAsFixed(2)}m < 0.5m)',
+        );
+        return;
+      }
+    } else {
+      debugPrint('📍 İlk nokta - doğrudan ekleniyor');
     }
 
     final point = RoutePointModel(
